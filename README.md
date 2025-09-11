@@ -38,10 +38,11 @@ cd KAES-ARCH/
 Edit the targets: user and kb using editor of your choice.
 
 Example: `sudo vim post` or `sudo nano post`
-
+```
 DTHEME=dark
 KB_LAYOUT=us
 VARIANT=""
+```
 
 > Variant is optional, can be left empty. Applies for the current sudo user by default.
 

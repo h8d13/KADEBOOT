@@ -27,7 +27,9 @@ cd KADEBOOT && sudo ./install
 
 ## After initial install
 
-Press reboot or exit. Go to BIOS again to switch to disk. And login this ugly SDDM screen using user you created earlier:
+You will have 3 options: Chroot, Reboot or exit. Pick exit.
+
+Go to BIOS again to switch to disk. And login this ugly SDDM screen using user you created earlier:
 
 <img width="1200" height="675" alt="image" src="https://github.com/user-attachments/assets/c747de21-e1bb-4efc-9959-365b171a49c7" />
 
@@ -54,6 +56,6 @@ Using vim you can use insert to edit, ESC to enter command mode and :wq to write
 
 Make exec sudo chmod +x post Then run: sudo ./post
 
-You are done !
+THis will restart one last time. and you are done !
 
 

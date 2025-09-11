@@ -34,11 +34,20 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 			allow_reset=True,
 		)
 		
-		# Set default values for items that already have values, but preserve modification state
+		# Set checkmark status: Type and Greeter only have one option so always default, 
+		# only Graphics Driver can be user-modified
 		for item in self._item_group._menu_items:
-			if item.key in ['profile', 'gfx_driver', 'greeter']:
-				if item.value is not None and item.default_value is None:
-					# Only set as default if no default was previously set (first time)
+			if item.value is not None:
+				if item.key == 'gfx_driver':
+					# Only graphics driver can be modified by user choice
+					if item.value == GfxDriver.AllOpenSource:
+						item.default_value = item.value
+						item._value_modified = False  # Default
+					else:
+						item.default_value = GfxDriver.AllOpenSource
+						item._value_modified = True   # User modified
+				else:
+					# Type and Greeter only have one option each, so always default
 					item.default_value = item.value
 					item._value_modified = False
 

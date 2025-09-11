@@ -193,6 +193,18 @@ class _SysInfo:
 
 		return modules
 
+	@cached_property
+	def graphics_devices(self) -> dict[str, str]:
+		"""
+		Returns graphics devices (cached for performance)
+		"""
+		cards: dict[str, str] = {}
+		for line in SysCommand('lspci'):
+			if b' VGA ' in line or b' 3D ' in line:
+				_, identifier = line.split(b': ', 1)
+				cards[identifier.strip().decode('UTF-8')] = str(line)
+		return cards
+
 
 _sys_info = _SysInfo()
 
@@ -208,25 +220,16 @@ class SysInfo:
 		return os.path.isdir('/sys/firmware/efi')
 
 	@staticmethod
-	def _graphics_devices() -> dict[str, str]:
-		cards: dict[str, str] = {}
-		for line in SysCommand('lspci'):
-			if b' VGA ' in line or b' 3D ' in line:
-				_, identifier = line.split(b': ', 1)
-				cards[identifier.strip().decode('UTF-8')] = str(line)
-		return cards
-
-	@staticmethod
 	def has_nvidia_graphics() -> bool:
-		return any('nvidia' in x.lower() for x in SysInfo._graphics_devices())
+		return any('nvidia' in x.lower() for x in _sys_info.graphics_devices)
 
 	@staticmethod
 	def has_amd_graphics() -> bool:
-		return any('amd' in x.lower() for x in SysInfo._graphics_devices())
+		return any('amd' in x.lower() for x in _sys_info.graphics_devices)
 
 	@staticmethod
 	def has_intel_graphics() -> bool:
-		return any('intel' in x.lower() for x in SysInfo._graphics_devices())
+		return any('intel' in x.lower() for x in _sys_info.graphics_devices)
 
 	@staticmethod
 	def cpu_vendor() -> CpuVendor | None:

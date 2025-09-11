@@ -4,7 +4,6 @@ from enum import Enum
 from pathlib import Path
 from typing import assert_never
 
-from archinstall.lib.models.packages import Repository
 from archinstall.lib.translationhandler import tr
 from archinstall.tui.curses_menu import EditMenu, SelectMenu, Tui
 from archinstall.tui.menu_item import MenuItem, MenuItemGroup
@@ -145,7 +144,6 @@ def select_archinstall_language(languages: list[Language], preset: Language) -> 
 
 def ask_additional_packages_to_install(
 	preset: list[str] = [],
-	repositories: set[Repository] = set(),
 ) -> list[str]:
 	header = tr('Only packages such as base, base-devel, linux, linux-firmware, efibootmgr and optional profile packages are installed.') + '\n'
 	header += tr('Enter additional packages to install (comma-separated):') + '\n'

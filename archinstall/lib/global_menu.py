@@ -541,17 +541,7 @@ class GlobalMenu(AbstractMenu[None]):
 		return profile_config
 
 	def _select_additional_packages(self, preset: list[str]) -> list[str]:
-		config: MirrorConfiguration | None = self._item_group.find_by_key('mirror_config').value
-
-		repositories: set[Repository] = set()
-		if config:
-			repositories = set(config.optional_repositories)
-
-		packages = ask_additional_packages_to_install(
-			preset,
-			repositories=repositories,
-		)
-
+		packages = ask_additional_packages_to_install(preset)
 		return packages
 
 	def _mirror_configuration(self, preset: MirrorConfiguration | None = None) -> MirrorConfiguration:

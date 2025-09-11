@@ -73,6 +73,13 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 	@override
 	def run(self, additional_title: str | None = None) -> ProfileConfiguration | None:
 		from archinstall.lib.profile.profiles_handler import profile_handler
+		from archinstall.lib.hardware import SysInfo
+		
+		# Preload graphics detection for faster access to Graphics driver menu
+		# This caches the lspci detection so it's already available when needed
+		SysInfo.has_nvidia_graphics()
+		SysInfo.has_amd_graphics() 
+		SysInfo.has_intel_graphics()
 		
 		# If no profile is set and there's only one option, auto-select it
 		if not self._profile_config.profile:

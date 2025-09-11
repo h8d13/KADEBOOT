@@ -36,5 +36,3 @@ echo "Press Enter to continue or Ctrl+C to cancel..."
 read -r
 export PYTHONPATH="$(pwd):$PYTHONPATH"
 python -m archinstall
-echo
-echo "Check /var/log/archinstall/install.log for details"

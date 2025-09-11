@@ -98,9 +98,7 @@ def run_as_a_module() -> None:
 			error(err)
 
 			text = (
-				'Archinstall experienced the above error. If you think this is a bug, please report it to\n'
-				'https://github.com/archlinux/archinstall and include the log file "/var/log/archinstall/install.log".\n\n'
-				"Hint: To extract the log from a live ISO \ncurl -F'file=@/var/log/archinstall/install.log' https://0x0.st\n"
+				'Archinstall experienced the above error. If you think this is a bug, please report it.\n'
 			)
 
 			warn(text)

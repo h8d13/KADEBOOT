@@ -1,6 +1,6 @@
 # KADEBOOT
 
-A **stripped-down version** of the official archinstall that **only supports Desktop/KDE Plasma**.
+An unofficial **stripped-down version** of the official archinstall that **is aimed for Desktop/KDE Plasma**.
 
 This is a modified version (fork) of [archinstall](https://github.com/archlinux/archinstall), originally developed by the Arch Linux team.
 

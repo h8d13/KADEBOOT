@@ -57,13 +57,21 @@ class DesktopProfile(Profile):
 
 	@override
 	def do_on_select(self) -> SelectResult:
+		desktop_profiles = profile_handler.get_desktop_profiles()
+		
+		# If there's only one desktop profile available, auto-select it
+		if len(desktop_profiles) == 1:
+			self.current_selection = [desktop_profiles[0]]
+			self._do_on_select_profiles()
+			return SelectResult.NewSelection
+		
 		items = [
 			MenuItem(
 				p.name,
 				value=p,
 				preview_action=lambda x: x.value.preview_text(),
 			)
-			for p in profile_handler.get_desktop_profiles()
+			for p in desktop_profiles
 		]
 
 		group = MenuItemGroup(items, sort_items=True, sort_case_sensitive=False)

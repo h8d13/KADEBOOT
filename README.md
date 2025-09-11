@@ -14,8 +14,8 @@ Boot Arch Linux Live ISO, get internet access, then:
 # Install dependencies (others included in ISO)
 sudo pacman -Sy git python-cryptography
 # Clone repo and move inside it
-git clone https://github.com/h8d13/archinstall-kde.git
-cd archinstall-kde
+git clone https://github.com/h8d13/KADEBOOT.git
+cd KADEBOOT
 
 # Run
 sudo ./run.sh

@@ -33,4 +33,5 @@ python -c "import pydantic" 2>/dev/null || echo "Warning: pydantic not found (us
 echo "All dependencies found!"
 
 export PYTHONPATH="$(pwd):$PYTHONPATH"
-python -m archinstall #--advanced 
+python -m archinstall #--advanced
+echo

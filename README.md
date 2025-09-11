@@ -8,7 +8,8 @@ Perfect for users who know they want KDE and it's dependencies (NetworkManager a
 
 ## Installation
 
-Boot Arch Linux Live ISO, get internet access, then:
+Boot Arch Linux Live ISO (using f10, f12 or del), get internet access, then:
+- No secureboot or set to `other OS`
 
 ```bash
 pacman -Sy --noconfirm git python-cryptography
@@ -23,3 +24,6 @@ The dependancy `python-cryptography` is used in LUKS encryption module for Disks
 
 - Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py`
 - Stripped a lot of code for defaults to be simpler. And for display.
+
+
+Then once you've logged in this 

@@ -12,7 +12,7 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-echo "KDE Archinstall - Direct Run"
+echo "KADEBOOT - ARCHINSTALL"
 echo "============================="
 echo
 

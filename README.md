@@ -25,5 +25,28 @@ The dependancy `python-cryptography` is used in LUKS encryption module for Disks
 - Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py`
 - Stripped a lot of code for defaults to be simpler. And for display.
 
+After initial install: Press reboot go to BIOS again to switch to disk. And login this ugly SDDM screen using user you created earlier:
 
-Then once you've logged in this 
+<img width="1200" height="675" alt="image" src="https://github.com/user-attachments/assets/c747de21-e1bb-4efc-9959-365b171a49c7" />
+
+Open the apps launcher > type `Konsole` 
+
+```
+git clone https://github.com/h8d13/KAES-ARCH
+cd KAES-ARCH/
+``` 
+Edit the targets: user and kb using editor of your choice.
+
+Example: `sudo vim post` or `sudo nano post`
+
+DTHEME=dark
+KB_LAYOUT=us
+VARIANT=""
+
+> Variant is optional, can be left empty. Applies for the current sudo user by default.
+
+Using vim you can use insert to edit, ESC to enter command mode and :wq to write changes. You can also go through some of the rest of the code as there might be some programs you want to add/remove.
+
+Make exec sudo chmod +x post Then run: sudo ./post
+
+You are done !

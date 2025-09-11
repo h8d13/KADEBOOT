@@ -18,17 +18,18 @@ git clone https://github.com/h8d13/KADEBOOT
 cd KADEBOOT && sudo ./install
 ```
 
-The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. 
+> The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. 
 
 ## Modifications
 
 - Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py`
 - Stripped a lot of code for defaults to be simpler. And for display.
 
-After initial install: Press reboot go to BIOS again to switch to disk. And login this ugly SDDM screen using user you created earlier:
+## After initial install
+
+Press reboot or exit. Go to BIOS again to switch to disk. And login this ugly SDDM screen using user you created earlier:
 
 <img width="1200" height="675" alt="image" src="https://github.com/user-attachments/assets/c747de21-e1bb-4efc-9959-365b171a49c7" />
-
 
 Open the apps launcher > type `Konsole` 
 
@@ -52,3 +53,5 @@ Using vim you can use insert to edit, ESC to enter command mode and :wq to write
 Make exec sudo chmod +x post Then run: sudo ./post
 
 You are done !
+
+

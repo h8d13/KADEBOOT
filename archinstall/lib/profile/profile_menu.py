@@ -89,18 +89,19 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 				profile = self._select_profile(None)
 				if profile:
 					self._profile_config.profile = profile
-					# Mark all auto-selected items as default, not modified
+					# Mark auto-selected profile as default since it was auto-selected
 					profile_item = self._item_group.find_by_key('profile')
 					profile_item.value = profile
 					profile_item.set_as_default()
 					
-					# Also mark gfx_driver and greeter as default if they were auto-set
+					# Only mark gfx_driver and greeter as default if they were just auto-set
+					# Don't override user's previous choices by checking if they were previously unset
 					gfx_item = self._item_group.find_by_key('gfx_driver')
-					if gfx_item.value is not None:
+					if gfx_item.value is not None and not gfx_item._value_modified:
 						gfx_item.set_as_default()
 						
 					greeter_item = self._item_group.find_by_key('greeter')
-					if greeter_item.value is not None:
+					if greeter_item.value is not None and not greeter_item._value_modified:
 						greeter_item.set_as_default()
 		
 		super().run(additional_title=additional_title)

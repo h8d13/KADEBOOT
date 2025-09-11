@@ -21,4 +21,4 @@ cd KADEBOOT
 sudo ./install.sh
 ```
 
-The dependancy python-cryptography is used in LUKS encryption module for Disks section. 
+The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. 

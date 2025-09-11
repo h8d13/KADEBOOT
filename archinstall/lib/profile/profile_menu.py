@@ -121,19 +121,25 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 		profile = select_profile(preset)
 
 		if profile is not None:
+			gfx_item = self._item_group.find_by_key('gfx_driver')
 			if not profile.is_graphic_driver_supported():
-				self._item_group.find_by_key('gfx_driver').enabled = False
-				self._item_group.find_by_key('gfx_driver').value = None
+				gfx_item.enabled = False
+				gfx_item.value = None
 			else:
-				self._item_group.find_by_key('gfx_driver').enabled = True
-				self._item_group.find_by_key('gfx_driver').value = GfxDriver.AllOpenSource
+				gfx_item.enabled = True
+				# Only set default graphics driver if user hasn't already chosen one
+				if gfx_item.value is None:
+					gfx_item.value = GfxDriver.AllOpenSource
 
+			greeter_item = self._item_group.find_by_key('greeter')
 			if not profile.is_greeter_supported():
-				self._item_group.find_by_key('greeter').enabled = False
-				self._item_group.find_by_key('greeter').value = None
+				greeter_item.enabled = False
+				greeter_item.value = None
 			else:
-				self._item_group.find_by_key('greeter').enabled = True
-				self._item_group.find_by_key('greeter').value = profile.default_greeter_type
+				greeter_item.enabled = True
+				# Only set default greeter if user hasn't already chosen one
+				if greeter_item.value is None:
+					greeter_item.value = profile.default_greeter_type
 		else:
 			self._item_group.find_by_key('gfx_driver').value = None
 			self._item_group.find_by_key('greeter').value = None

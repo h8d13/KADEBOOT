@@ -63,7 +63,7 @@ class GfxDriver(Enum):
 	NvidiaOpenKernel = 'Nvidia (open kernel module for newer GPUs, Turing+)'
 	NvidiaOpenSource = 'Nvidia (open-source nouveau driver)'
 	NvidiaProprietary = 'Nvidia (proprietary)'
-	IntelNvidiaHybrid = 'Intel + Nvidia (hybrid)'
+	IntelNvidiaHybrid = 'Intel + Nvidia (open + proprietary hybrid)'
 	VMOpenSource = 'VirtualBox (open-source)'
 
 	def is_nvidia(self) -> bool:

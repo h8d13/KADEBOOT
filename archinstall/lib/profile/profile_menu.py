@@ -72,6 +72,19 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 
 	@override
 	def run(self, additional_title: str | None = None) -> ProfileConfiguration | None:
+		from archinstall.lib.profile.profiles_handler import profile_handler
+		
+		# If no profile is set and there's only one option, auto-select it
+		if not self._profile_config.profile:
+			top_level_profiles = profile_handler.get_top_level_profiles()
+			if len(top_level_profiles) == 1:
+				profile = self._select_profile(None)
+				if profile:
+					self._profile_config.profile = profile
+					# Mark as modified so it appears selected
+					self._item_group.find_by_key('profile')._value_modified = True
+					self._item_group.find_by_key('profile').value = profile
+		
 		super().run(additional_title=additional_title)
 		return self._profile_config
 	

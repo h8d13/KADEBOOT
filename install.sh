@@ -27,12 +27,10 @@ if ! python -c "import cryptography" 2>/dev/null; then
 fi
 
 # Check modules that should be in ISO
-python -c "import parted" 2>/dev/null || echo "Warning: pyparted not found (usually in ISO)"
-python -c "import pydantic" 2>/dev/null || echo "Warning: pydantic not found (usually in ISO)"
+python -c "import parted" 2>/dev/null || echo "Warning: pyparted not found (usually in ISO)"; exit 1
+python -c "import pydantic" 2>/dev/null || echo "Warning: pydantic not found (usually in ISO)";exit 1
 
 echo "All dependencies found!"
-echo
-echo "Press Enter to continue or Ctrl+C to cancel..."
-read -r
+
 export PYTHONPATH="$(pwd):$PYTHONPATH"
-python -m archinstall
+python -m archinstall #--advanced 

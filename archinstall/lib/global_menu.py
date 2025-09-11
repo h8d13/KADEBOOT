@@ -62,6 +62,8 @@ class GlobalMenu(AbstractMenu[None]):
 			'uki',           # False
 			'hostname',      # 'archlinux'
 			'kernels',       # ['linux']
+			'network_config', # NetworkManager
+			'packages',       # git
 			'parallel_downloads', # 0
 			'timezone',      # 'UTC'
 			'ntp',          # True
@@ -163,7 +165,7 @@ class GlobalMenu(AbstractMenu[None]):
 			MenuItem(
 				text=tr('Network configuration'),
 				action=ask_to_configure_network,
-				value={},
+				value=NetworkConfiguration(NicType.NM),
 				preview_action=self._prev_network_config,
 				key='network_config',
 			),
@@ -191,7 +193,7 @@ class GlobalMenu(AbstractMenu[None]):
 			MenuItem(
 				text=tr('Additional packages'),
 				action=self._select_additional_packages,
-				value=[],
+				value=['git'],
 				preview_action=self._prev_additional_pkgs,
 				key='packages',
 			),

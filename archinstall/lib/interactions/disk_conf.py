@@ -243,8 +243,8 @@ def _boot_partition(sector_size: SectorSize, using_gpt: bool) -> PartitionModifi
 
 def select_main_filesystem_format() -> FilesystemType:
 	items = [
-		MenuItem('btrfs', value=FilesystemType.Btrfs),
 		MenuItem('ext4', value=FilesystemType.Ext4),
+		MenuItem('btrfs', value=FilesystemType.Btrfs),
 		MenuItem('xfs', value=FilesystemType.Xfs),
 		MenuItem('f2fs', value=FilesystemType.F2fs),
 	]

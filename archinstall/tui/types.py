@@ -12,8 +12,7 @@ class STYLE(Enum):
 	HELP = 4
 	ERROR = 5
 	CHECK_MARK = 6
-	CROSS_MARK = 7
-	DEFAULT_MARK = 8
+	DEFAULT_MARK = 7
 
 
 class MenuKeys(Enum):
@@ -119,7 +118,6 @@ class Chars:
 	Triangle_up = '▲'
 	Triangle_down = '▼'
 	Check = '✓'
-	Cross = '✗'
 	Default = 'D'
 	Right_arrow = '←'
 

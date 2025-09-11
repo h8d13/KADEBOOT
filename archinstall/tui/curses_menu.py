@@ -1053,7 +1053,7 @@ class SelectMenu[ValueT](AbstractCurses[ValueT]):
 		# Get text and style info for checkmarks
 		text, style_info = self._item_group.get_item_text_with_style(item)
 		
-		if style_info in ['check', 'cross', 'default']:
+		if style_info in ['check', 'default']:
 			# Split text to separate the checkmark
 			from .types import Chars
 			if style_info == 'check' and Chars.Check in text:
@@ -1067,23 +1067,6 @@ class SelectMenu[ValueT](AbstractCurses[ValueT]):
 					entries.append(ViewportEntry(Chars.Check, row_idx, cur_pos, checkmark_style))
 					cur_pos += len(Chars.Check)
 					# Add text after checkmark (if any)
-					if parts[1]:
-						entries.append(ViewportEntry(parts[1], row_idx, cur_pos, style))
-						cur_pos += len(parts[1])
-				else:
-					entries.append(ViewportEntry(text, row_idx, cur_pos, style))
-					cur_pos += len(text)
-			elif style_info == 'cross' and Chars.Cross in text:
-				parts = text.rsplit(Chars.Cross, 1)
-				if len(parts) == 2:
-					# Add text before cross
-					entries.append(ViewportEntry(parts[0], row_idx, cur_pos, style))
-					cur_pos += len(parts[0])
-					# Add colored cross
-					cross_style = STYLE.CROSS_MARK
-					entries.append(ViewportEntry(Chars.Cross, row_idx, cur_pos, cross_style))
-					cur_pos += len(Chars.Cross)
-					# Add text after cross (if any)
 					if parts[1]:
 						entries.append(ViewportEntry(parts[1], row_idx, cur_pos, style))
 						cur_pos += len(parts[1])
@@ -1452,7 +1435,6 @@ class Tui:
 		curses.init_pair(STYLE.HELP.value, curses.COLOR_GREEN, curses.COLOR_BLACK)
 		curses.init_pair(STYLE.ERROR.value, curses.COLOR_RED, curses.COLOR_BLACK)
 		curses.init_pair(STYLE.CHECK_MARK.value, curses.COLOR_GREEN, curses.COLOR_BLACK)
-		curses.init_pair(STYLE.CROSS_MARK.value, curses.COLOR_RED, curses.COLOR_BLACK)
 		curses.init_pair(STYLE.DEFAULT_MARK.value, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
 	def get_color(self, color: STYLE) -> int:

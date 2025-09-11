@@ -34,12 +34,13 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 			allow_reset=True,
 		)
 		
-		# Force all items to be unmodified initially since this is a fresh menu
+		# Set default values for items that already have values, but preserve modification state
 		for item in self._item_group._menu_items:
 			if item.key in ['profile', 'gfx_driver', 'greeter']:
-				item._value_modified = False
-				if item.value is not None:
+				if item.value is not None and item.default_value is None:
+					# Only set as default if no default was previously set (first time)
 					item.default_value = item.value
+					item._value_modified = False
 
 	def _define_menu_options(self) -> list[MenuItem]:
 		return [

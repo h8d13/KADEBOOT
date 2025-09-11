@@ -235,9 +235,6 @@ class MenuItemGroup:
 					text = f'{text}{spacing}{Chars.Default}'
 				else:
 					text = f'{text}{spacing}{Chars.Check}'
-			elif item.mandatory and item._value_modified:
-				# Only show red cross for mandatory items that have been interacted with
-				text = f'{text}{spacing}{Chars.Cross}'
 			else:
 				text = item.text
 
@@ -249,7 +246,7 @@ class MenuItemGroup:
 	def get_item_text_with_style(self, item: MenuItem) -> tuple[str, str | None]:
 		"""
 		Returns item text and style information for checkmarks
-		Returns (text, style_info) where style_info can be 'check', 'cross', or None
+		Returns (text, style_info) where style_info can be 'check' or None
 		"""
 		if item.is_empty():
 			return '', None
@@ -275,10 +272,6 @@ class MenuItemGroup:
 				else:
 					text = f'{text}{spacing}{Chars.Check}'
 					style_info = 'check'
-			elif item.mandatory and item._value_modified:
-				# Only show red cross for mandatory items that have been interacted with
-				text = f'{text}{spacing}{Chars.Cross}'
-				style_info = 'cross'
 			else:
 				text = item.text
 

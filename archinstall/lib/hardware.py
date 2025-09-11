@@ -45,6 +45,7 @@ class GfxPackage(Enum):
 	Mesa = 'mesa'
 	NvidiaDkms = 'nvidia-dkms'
 	NvidiaOpenDkms = 'nvidia-open-dkms'
+	NvidiaPrime = 'nvidia-prime'
 	VulkanIntel = 'vulkan-intel'
 	VulkanRadeon = 'vulkan-radeon'
 	VulkanNouveau = 'vulkan-nouveau'
@@ -62,11 +63,12 @@ class GfxDriver(Enum):
 	NvidiaOpenKernel = 'Nvidia (open kernel module for newer GPUs, Turing+)'
 	NvidiaOpenSource = 'Nvidia (open-source nouveau driver)'
 	NvidiaProprietary = 'Nvidia (proprietary)'
+	IntelNvidiaHybrid = 'Intel + Nvidia (hybrid)'
 	VMOpenSource = 'VirtualBox (open-source)'
 
 	def is_nvidia(self) -> bool:
 		match self:
-			case GfxDriver.NvidiaProprietary | GfxDriver.NvidiaOpenSource | GfxDriver.NvidiaOpenKernel:
+			case GfxDriver.NvidiaProprietary | GfxDriver.NvidiaOpenSource | GfxDriver.NvidiaOpenKernel | GfxDriver.IntelNvidiaHybrid:
 				return True
 			case _:
 				return False
@@ -130,6 +132,17 @@ class GfxDriver(Enum):
 					GfxPackage.NvidiaDkms,
 					GfxPackage.Dkms,
 					GfxPackage.LibvaNvidiaDriver,
+				]
+			case GfxDriver.IntelNvidiaHybrid:
+				packages += [
+					GfxPackage.Mesa,
+					GfxPackage.LibvaIntelDriver,
+					GfxPackage.IntelMediaDriver,
+					GfxPackage.VulkanIntel,
+					GfxPackage.NvidiaDkms,
+					GfxPackage.Dkms,
+					GfxPackage.LibvaNvidiaDriver,
+					GfxPackage.NvidiaPrime,
 				]
 			case GfxDriver.VMOpenSource:
 				packages += [

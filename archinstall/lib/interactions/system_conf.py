@@ -133,12 +133,20 @@ def select_driver(options: list[GfxDriver] = [], preset: GfxDriver | None = None
 		group.set_focus_by_value(preset)
 
 	header = ''
-	if SysInfo.has_amd_graphics():
-		header += tr('For the best compatibility with your AMD hardware, you may want to use either the all open-source or AMD / ATI options.') + '\n'
-	if SysInfo.has_intel_graphics():
-		header += tr('For the best compatibility with your Intel hardware, you may want to use either the all open-source or Intel options.\n')
-	if SysInfo.has_nvidia_graphics():
-		header += tr('For the best compatibility with your Nvidia hardware, you may want to use the Nvidia proprietary driver.\n')
+	
+	# Check for hybrid graphics first
+	if SysInfo.has_intel_graphics() and SysInfo.has_nvidia_graphics():
+		header += tr('Hybrid graphics detected (Intel + Nvidia). For laptop power management and GPU switching, consider the Intel + Nvidia (hybrid) option.\n')
+	elif SysInfo.has_amd_graphics() and SysInfo.has_nvidia_graphics():
+		header += tr('Multiple GPUs detected (AMD + Nvidia). You may want to choose based on your primary use case.\n')
+	else:
+		# Single GPU recommendations
+		if SysInfo.has_amd_graphics():
+			header += tr('For the best compatibility with your AMD hardware, you may want to use either the all open-source or AMD / ATI options.') + '\n'
+		if SysInfo.has_intel_graphics():
+			header += tr('For the best compatibility with your Intel hardware, you may want to use either the all open-source or Intel options.\n')
+		if SysInfo.has_nvidia_graphics():
+			header += tr('For the best compatibility with your Nvidia hardware, you may want to use the Nvidia proprietary driver.\n')
 
 	result = SelectMenu[GfxDriver](
 		group,

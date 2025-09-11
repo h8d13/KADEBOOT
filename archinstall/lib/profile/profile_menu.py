@@ -213,6 +213,24 @@ def select_profile(
 	from archinstall.lib.profile.profiles_handler import profile_handler
 
 	top_level_profiles = profile_handler.get_top_level_profiles()
+	
+	# If there's only one profile type available, auto-select it
+	if len(top_level_profiles) == 1:
+		profile_selection = top_level_profiles[0]
+		select_result = profile_selection.do_on_select()
+		
+		if not select_result:
+			return None
+			
+		match select_result:
+			case select_result.NewSelection:
+				profile_handler.reset_top_level_profiles(exclude=[profile_selection])
+				return profile_selection
+			case select_result.ResetCurrent:
+				profile_handler.reset_top_level_profiles()
+				return None
+			case select_result.SameSelection:
+				return profile_selection
 
 	if header is None:
 		header = tr('This is a list of pre-programmed default_profiles') + '\n'

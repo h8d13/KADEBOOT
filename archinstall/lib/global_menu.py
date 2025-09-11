@@ -544,6 +544,9 @@ class GlobalMenu(AbstractMenu[None]):
 		return profile_config
 
 	def _select_additional_packages(self, preset: list[str]) -> list[str]:
+		# Ensure git is default if preset is empty
+		if not preset:
+			preset = ['git']
 		packages = ask_additional_packages_to_install(preset)
 		return packages
 

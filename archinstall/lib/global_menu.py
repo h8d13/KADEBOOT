@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import override
 
 from archinstall.lib.disk.disk_menu import DiskLayoutConfigurationMenu
-from archinstall.lib.models.application import ApplicationConfiguration
+from archinstall.lib.models.application import ApplicationConfiguration, Audio, AudioConfiguration
 from archinstall.lib.models.authentication import AuthenticationConfiguration
 from archinstall.lib.models.device import DiskLayoutConfiguration, DiskLayoutType, EncryptionType, FilesystemType, PartitionModification
 from archinstall.tui.menu_item import MenuItem, MenuItemGroup
@@ -57,13 +57,13 @@ class GlobalMenu(AbstractMenu[None]):
 		items_with_defaults = [
 			'locale_config',  # Default locale configuration
 			'profile_config', # Default profile with graphics driver
+			'app_config',     # Pipewire audio
 			'swap',           # True
 			'bootloader',     # GRUB
 			'uki',           # False
 			'hostname',      # 'archlinux'
 			'kernels',       # ['linux']
 			'network_config', # NetworkManager
-			'packages',       # git
 			'parallel_downloads', # 0
 			'timezone',      # 'UTC'
 			'ntp',          # True
@@ -76,10 +76,10 @@ class GlobalMenu(AbstractMenu[None]):
 					# Profile config gets populated later, mark as default even if None initially
 					item._value_modified = False
 					item.default_value = item.value
-				elif key == 'packages':
-					# Packages always start with git as default
+				elif key == 'app_config':
+					# App config starts with pipewire as default
 					item._value_modified = False
-					item.default_value = ['git']
+					item.default_value = ApplicationConfiguration(audio_config=AudioConfiguration(audio=Audio.PIPEWIRE))
 				elif item.value is not None:
 					item.set_as_default()
 			except ValueError:
@@ -154,7 +154,7 @@ class GlobalMenu(AbstractMenu[None]):
 			MenuItem(
 				text=tr('Applications'),
 				action=self._select_applications,
-				value=[],
+				value=ApplicationConfiguration(audio_config=AudioConfiguration(audio=Audio.PIPEWIRE)),
 				preview_action=self._prev_applications,
 				key='app_config',
 			),
@@ -199,7 +199,6 @@ class GlobalMenu(AbstractMenu[None]):
 				action=self._select_additional_packages,
 				value=['git'],
 				preview_action=self._prev_additional_pkgs,
-				mandatory=True,
 				key='packages',
 			),
 			MenuItem(

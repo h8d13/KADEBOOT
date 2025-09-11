@@ -1,5 +1,7 @@
 # KADEBOOT
 
+<img width="2000" height="1125" alt="image" src="https://github.com/user-attachments/assets/1de805c4-26f9-4071-9491-88d077decfd7" />
+
 An unofficial **stripped-down version** of the official archinstall that **is aimed for Desktop/KDE Plasma**.
 
 This is a modified version (fork) of [archinstall](https://github.com/archlinux/archinstall), originally developed by the Arch Linux team.
@@ -55,5 +57,3 @@ VARIANT=""
 Then run: `chmod +x post && sudo ./post`
 
 After our script it will restart one last time. And you are done !
-
-

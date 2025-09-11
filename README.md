@@ -18,5 +18,5 @@ git clone https://github.com/h8d13/KADEBOOT.git
 cd KADEBOOT
 
 # Run
-sudo ./run.sh
+sudo ./install.sh
 ```

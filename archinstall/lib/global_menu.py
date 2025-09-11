@@ -6,7 +6,6 @@ from archinstall.lib.disk.disk_menu import DiskLayoutConfigurationMenu
 from archinstall.lib.models.application import ApplicationConfiguration
 from archinstall.lib.models.authentication import AuthenticationConfiguration
 from archinstall.lib.models.device import DiskLayoutConfiguration, DiskLayoutType, EncryptionType, FilesystemType, PartitionModification
-from archinstall.lib.packages import list_available_packages
 from archinstall.tui.menu_item import MenuItem, MenuItemGroup
 
 from .applications.application_menu import ApplicationMenu
@@ -559,9 +558,6 @@ class GlobalMenu(AbstractMenu[None]):
 		mirror_configuration = MirrorMenu(preset=preset).run()
 
 		if mirror_configuration.optional_repositories:
-			# reset the package list cache in case the repository selection has changed
-			list_available_packages.cache_clear()
-
 			# enable the repositories in the config
 			pacman_config = PacmanConfig(None)
 			pacman_config.enable(mirror_configuration.optional_repositories)

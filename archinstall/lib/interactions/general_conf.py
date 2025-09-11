@@ -5,15 +5,13 @@ from pathlib import Path
 from typing import assert_never
 
 from archinstall.lib.models.packages import Repository
-from archinstall.lib.packages.packages import list_available_packages
 from archinstall.lib.translationhandler import tr
 from archinstall.tui.curses_menu import EditMenu, SelectMenu, Tui
 from archinstall.tui.menu_item import MenuItem, MenuItemGroup
 from archinstall.tui.result import ResultType
-from archinstall.tui.types import Alignment, FrameProperties, Orientation, PreviewStyle
+from archinstall.tui.types import Alignment, FrameProperties, Orientation
 
 from ..locale.utils import list_timezones
-from ..models.packages import AvailablePackage, PackageGroup
 from ..output import warn
 from ..translationhandler import Language
 
@@ -149,61 +147,21 @@ def ask_additional_packages_to_install(
 	preset: list[str] = [],
 	repositories: set[Repository] = set(),
 ) -> list[str]:
-	repositories |= {Repository.Core, Repository.Extra}
-
-	respos_text = ', '.join([r.value for r in repositories])
-	output = tr('Repositories: {}').format(respos_text) + '\n'
-
-	output += tr('Loading packages...')
-	Tui.print(output, clear_screen=True)
-
-	packages = list_available_packages(tuple(repositories))
-	package_groups = PackageGroup.from_available_packages(packages)
-
-	# Additional packages (with some light weight error handling for invalid package names)
 	header = tr('Only packages such as base, base-devel, linux, linux-firmware, efibootmgr and optional profile packages are installed.') + '\n'
-	header += tr('Select any packages from the below list that should be installed additionally') + '\n'
+	header += tr('Enter additional packages to install (comma-separated):') + '\n'
+	header += tr('Example: flatpak, firefox, git, vim') + '\n'
 
-	# there are over 15k packages so this needs to be quick
-	preset_packages: list[AvailablePackage | PackageGroup] = []
-	for p in preset:
-		if p in packages:
-			preset_packages.append(packages[p])
-		elif p in package_groups:
-			preset_packages.append(package_groups[p])
+	# Convert preset list to comma-separated string
+	default_text = ', '.join(preset) if preset else ''
 
-	items = [
-		MenuItem(
-			name,
-			value=pkg,
-			preview_action=lambda x: x.value.info(),
-		)
-		for name, pkg in packages.items()
-	]
-
-	items += [
-		MenuItem(
-			name,
-			value=group,
-			preview_action=lambda x: x.value.info(),
-		)
-		for name, group in package_groups.items()
-	]
-
-	menu_group = MenuItemGroup(items, sort_items=True)
-	menu_group.set_selected_by_value(preset_packages)
-
-	result = SelectMenu[AvailablePackage | PackageGroup](
-		menu_group,
+	result = EditMenu(
+		tr('Additional packages'),
 		header=header,
-		alignment=Alignment.LEFT,
-		allow_reset=True,
+		alignment=Alignment.CENTER,
 		allow_skip=True,
-		multi=True,
-		preview_frame=FrameProperties.max('Package info'),
-		preview_style=PreviewStyle.RIGHT,
-		preview_size='auto',
-	).run()
+		allow_reset=True,
+		default_text=default_text,
+	).input()
 
 	match result.type_:
 		case ResultType.Skip:
@@ -211,8 +169,12 @@ def ask_additional_packages_to_install(
 		case ResultType.Reset:
 			return []
 		case ResultType.Selection:
-			selected_pacakges = result.get_values()
-			return [pkg.name for pkg in selected_pacakges]
+			text = result.text().strip()
+			if not text:
+				return []
+			# Split by comma and clean up whitespace
+			packages = [pkg.strip() for pkg in text.split(',') if pkg.strip()]
+			return packages
 
 
 def add_number_of_parallel_downloads(preset: int | None = None) -> int | None:

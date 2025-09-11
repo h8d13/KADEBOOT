@@ -7,7 +7,7 @@ from urllib.request import urlopen
 from urllib.response import addinfourl
 
 from ..exceptions import PackageError, SysCallError
-from ..models.packages import AvailablePackage, LocalPackage, PackageSearch, PackageSearchResult, Repository
+from ..models.packages import LocalPackage, PackageSearch, PackageSearchResult, Repository
 from ..output import debug
 from ..pacman import Pacman
 
@@ -128,45 +128,15 @@ def check_package_upgrade(package: str) -> str | None:
 	return None
 
 
-@lru_cache
-def list_available_packages(
-	repositories: tuple[Repository, ...],
-) -> dict[str, AvailablePackage]:
-	"""
-	Returns a list of all available packages in the database
-	"""
-	packages: dict[str, AvailablePackage] = {}
-	current_package: list[str] = []
-	filtered_repos = [name for repo in repositories for name in repo.get_repository_list()]
-
-	try:
-		Pacman.run('-Sy')
-	except Exception as e:
-		debug(f'Failed to sync Arch Linux package database: {e}')
-
-	for line in Pacman.run('-S --info'):
-		dec_line = line.decode().strip()
-		current_package.append(dec_line)
-
-		if dec_line.startswith('Validated'):
-			if current_package:
-				avail_pkg = _parse_package_output(current_package, AvailablePackage)
-				if avail_pkg.repository in filtered_repos:
-					packages[avail_pkg.name] = avail_pkg
-				current_package = []
-
-	return packages
-
-
 @lru_cache(maxsize=128)
 def _normalize_key_name(key: str) -> str:
 	return key.strip().lower().replace(' ', '_')
 
 
-def _parse_package_output[PackageType: (AvailablePackage, LocalPackage)](
+def _parse_package_output(
 	package_meta: list[str],
-	cls: type[PackageType],
-) -> PackageType:
+	cls: type[LocalPackage],
+) -> LocalPackage:
 	package = {}
 
 	for line in package_meta:

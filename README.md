@@ -31,6 +31,8 @@ Press reboot or exit. Go to BIOS again to switch to disk. And login this ugly SD
 
 <img width="1200" height="675" alt="image" src="https://github.com/user-attachments/assets/c747de21-e1bb-4efc-9959-365b171a49c7" />
 
+---
+
 Open the apps launcher > type `Konsole` 
 
 ```

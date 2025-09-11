@@ -195,6 +195,7 @@ class GlobalMenu(AbstractMenu[None]):
 				action=self._select_additional_packages,
 				value=['git'],
 				preview_action=self._prev_additional_pkgs,
+				mandatory=True,
 				key='packages',
 			),
 			MenuItem(

@@ -147,7 +147,7 @@ def ask_additional_packages_to_install(
 ) -> list[str]:
 	header = tr('Only packages such as base, base-devel, linux, linux-firmware, efibootmgr and optional profile packages are installed.') + '\n'
 	header += tr('Enter additional packages to install (comma-separated):') + '\n'
-	header += tr('Example: flatpak, firefox, git, vim') + '\n'
+	header += tr('Example: git, emacs') + '\n'
 
 	# Convert preset list to comma-separated string
 	default_text = ', '.join(preset) if preset else ''

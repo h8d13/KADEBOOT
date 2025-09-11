@@ -11,8 +11,10 @@ Perfect for users who know they want KDE and it's dependencies (NetworkManager a
 Boot Arch Linux Live ISO, get internet access, then:
 
 ```bash
-pacman -Sy --noconfirm git python-cryptography && git clone https://github.com/h8d13/KADEBOOT.git
-cd KADEBOOT && sudo ./install.sh
+pacman -Sy --noconfirm git python-cryptography
+git clone https://github.com/h8d13/KADEBOOT
+
+cd KADEBOOT && sudo ./install
 ```
 
 The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. 

@@ -52,7 +52,7 @@ VARIANT=""
 
 > Variant is optional, can be left empty. Applies for the current sudo user by default.
 
-Then run: sudo ./post
+Then run: `chmod +x post && sudo ./post`
 
 After our script it will restart one last time. And you are done !
 

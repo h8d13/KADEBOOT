@@ -1,4 +1,4 @@
-# KDE Archinstall
+# KADEBOOT
 
 A **stripped-down version** of the official archinstall that **only supports Desktop/KDE Plasma**.
 

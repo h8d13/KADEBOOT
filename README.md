@@ -53,11 +53,9 @@ Then run: `chmod +x post && sudo ./post`
 
 After our script it will restart one last time. And you are done !
 
-
 For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
 ## Modifications
 
 - Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py`
 - Stripped a lot of code for defaults to be simpler. And for display.
-

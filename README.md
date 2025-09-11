@@ -52,10 +52,8 @@ VARIANT=""
 
 > Variant is optional, can be left empty. Applies for the current sudo user by default.
 
-Using vim you can use insert to edit, ESC to enter command mode and :wq to write changes. You can also go through some of the rest of the code as there might be some programs you want to add/remove.
+Then run: sudo ./post
 
-Make exec sudo chmod +x post Then run: sudo ./post
-
-THis will restart one last time. and you are done !
+After our script it will restart one last time. And you are done !
 
 

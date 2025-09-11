@@ -7,8 +7,7 @@ set -e
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo "Error: This script must be run as root (use sudo)"
-    echo "Example: sudo ./run.sh"
+    echo "Error: This script must be run as root"
     exit 1
 fi
 
@@ -16,10 +15,10 @@ echo "KADEBOOT - ARCHINSTALL"
 echo "============================="
 echo
 
-# Check if we have the required Python modules
+# Print Python modules for debug
 python -c "import sys; print(f'Python {sys.version}')"
 
-# Check for required modules
+# Check for required modules that are not normally included in ISO
 echo "Checking dependencies..."
 if ! python -c "import cryptography" 2>/dev/null; then
     echo "Error: python-cryptography is required"
@@ -27,20 +26,15 @@ if ! python -c "import cryptography" 2>/dev/null; then
     exit 1
 fi
 
-# Check optional modules (should be in ISO)
+# Check modules that should be in ISO
 python -c "import parted" 2>/dev/null || echo "Warning: pyparted not found (usually in ISO)"
 python -c "import pydantic" 2>/dev/null || echo "Warning: pydantic not found (usually in ISO)"
 
 echo "All dependencies found!"
 echo
-echo "Starting KDE-only archinstall..."
-echo
 echo "Press Enter to continue or Ctrl+C to cancel..."
 read -r
-
-# Add current directory to Python path and run
 export PYTHONPATH="$(pwd):$PYTHONPATH"
 python -m archinstall
-
 echo
 echo "Check /var/log/archinstall/install.log for details"

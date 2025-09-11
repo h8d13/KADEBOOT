@@ -18,3 +18,8 @@ cd KADEBOOT && sudo ./install
 ```
 
 The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. 
+
+## Modifications
+
+- Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py`
+- Stripped a lot of code for defaults to be simpler. And for display.

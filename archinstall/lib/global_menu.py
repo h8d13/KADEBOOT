@@ -76,6 +76,10 @@ class GlobalMenu(AbstractMenu[None]):
 					# Profile config gets populated later, mark as default even if None initially
 					item._value_modified = False
 					item.default_value = item.value
+				elif key == 'packages':
+					# Packages always start with git as default
+					item._value_modified = False
+					item.default_value = ['git']
 				elif item.value is not None:
 					item.set_as_default()
 			except ValueError:

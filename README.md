@@ -63,7 +63,15 @@ You should now see this beauty instead.
 For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
 
-### KADEBOOT under the hood
+## KADEBOOT under the hood
+
+### Solving problems one by one
+
+- Misconfiguration of a single thing in archisntall could result in KDE not working as intended > Custom archinstall script
+- Many defaults on KDE are icky by default for desktop/laptop usage > Post script
+- Don't know how to use my system (gaming, flathub, etc) > GUI package manager + Settings
+
+### Flow
 
 **Boot ISO** → Run KADEBOOT (Archinstall but modified for KDE) → **Reboot** → (Clones for you) KAES-ARCH → Run post script (Many improvements to defaults) → (Clones for you) PACTOPAC →  **Reboot** → Use PACTOAPC settings page to quickly setup → **Normal usages** → Use PACTOPAC for ongoing management if needed (or use command line if familiar).
 
@@ -72,8 +80,9 @@ But it's all handled from here automatically you wont need to do much but follow
 
 We can also easily allow for self-upgrades by simply running `git pull` for example (especially for package manager or any added features). 
 
-## Modifications
+### Modifications
 
 - Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py`
 - Stripped a lot of code for defaults to be simpler. And for display.
 - Simplified heavily for KDE specifics. 
+

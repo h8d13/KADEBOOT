@@ -8,7 +8,7 @@ An unofficial **stripped-down version** of the official archinstall that **is ai
 
 This is a modified version (fork) of [archinstall](https://github.com/archlinux/archinstall), originally developed by the Arch Linux team.
 
-Perfect for users who know they want KDE and it's dependencies (NetworkManager and Pipewire). 
+## Perfect for users who know they want KDE and it's dependencies (NetworkManager, Pipewire, and SDDM). 
 
 ## Installation
 

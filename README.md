@@ -65,7 +65,7 @@ For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
 ### KADEBOOT under the hood
 
-Boot ISO → Run KADEBOOT → Reboot → (Clones for you) KAES-ARCH → Run post script → Use PACTOPAC for ongoing management if needed (or use command line if preferred).
+Boot ISO → Run KADEBOOT (Installs KDE and firmware + linux) → Reboot → (Clones for you) KAES-ARCH → Run post script → Use PACTOPAC for ongoing management if needed (or use command line if preferred).
 
 But it's all handled from here automatically you wont need to do much but follow the instructions above and pick desired values. 
 

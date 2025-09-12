@@ -75,16 +75,9 @@ class GlobalMenu(AbstractMenu[None]):
 					item._value_modified = False
 					item.default_value = item.value
 				elif key == 'app_config':
-					# App config default configuration (Bluetooth disabled, Audio PipeWire)
-					default_config = ApplicationConfiguration(
-						bluetooth_config=BluetoothConfiguration(enabled=False),
-						audio_config=AudioConfiguration(audio=Audio.PIPEWIRE)
-					)
+					# App config default is None to show D when at defaults
 					item._value_modified = False
-					item.default_value = default_config
-					# Set value to default if currently None
-					if item.value is None:
-						item.value = default_config
+					item.default_value = None
 				elif item.value is not None:
 					item.set_as_default()
 			except ValueError:
@@ -266,10 +259,9 @@ class GlobalMenu(AbstractMenu[None]):
 		
 		app_config = ApplicationMenu(preset).run()
 		
-		# Only reset modified flag if still at true defaults
+		# Return None if still at defaults to show D, otherwise return config to show V
 		if app_config.is_default_configuration():
-			app_item = self._item_group.find_by_key('app_config')
-			app_item._value_modified = False
+			return None
 		
 		return app_config
 

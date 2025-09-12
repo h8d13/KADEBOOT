@@ -316,12 +316,6 @@ class GlobalMenu(AbstractMenu[None]):
 			return output
 		return None
 
-	def _prev_additional_pkgs(self, item: MenuItem) -> str | None:
-		if item.value:
-			output = '\n'.join(sorted(item.value))
-			return output
-		return None
-
 	def _prev_authentication(self, item: MenuItem) -> str | None:
 		if item.value:
 			auth_config: AuthenticationConfiguration = item.value

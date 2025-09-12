@@ -53,7 +53,7 @@ VARIANT=""
 
 Then run: `chmod +x post && sudo ./post`
 
-After our script it will restart one last time. And you are done !
+After ruuning the script it will restart one last time. And you are done !
 
 For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 

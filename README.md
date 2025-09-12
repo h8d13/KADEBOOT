@@ -42,15 +42,15 @@ cd KAES-ARCH/
 Edit the targets: user and kb using editor of your choice.
 
 Example: `sudo vim post` or `sudo nano post`
+
 ```
 DTHEME=dark
 KB_LAYOUT=us
 VARIANT=""
 ```
+> Variant is optional, can be left empty. Applies for the current sudo user by default. Do check out some of the parts that you can configure (additional packages, removing stuff, etc). 
 
-> Variant is optional, can be left empty. Applies for the current sudo user by default.
-
-Then run: `chmod +x post && sudo ./post`
+Then run: `sudo ./post`
 
 After running the script it will restart one last time. **And you are done !**
 

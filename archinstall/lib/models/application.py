@@ -54,6 +54,18 @@ class BluetoothConfiguration:
 class ApplicationConfiguration:
 	bluetooth_config: BluetoothConfiguration | None = None
 	audio_config: AudioConfiguration | None = None
+	
+	def is_default_configuration(self) -> bool:
+		"""Check if this configuration represents default values"""
+		bluetooth_is_default = (self.bluetooth_config is None or 
+		                        (self.bluetooth_config is not None and 
+		                         not self.bluetooth_config.enabled))  # Default is disabled
+		
+		audio_is_default = (self.audio_config is None or
+		                   (self.audio_config is not None and
+		                    self.audio_config.audio == Audio.PIPEWIRE))  # Default is PipeWire
+		
+		return bluetooth_is_default and audio_is_default
 
 	@staticmethod
 	def parse_arg(

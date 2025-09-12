@@ -75,9 +75,16 @@ class GlobalMenu(AbstractMenu[None]):
 					item._value_modified = False
 					item.default_value = item.value
 				elif key == 'app_config':
-					# App config default is None (shows defaults: Bluetooth disabled, Audio PipeWire)
+					# App config default configuration (Bluetooth disabled, Audio PipeWire)
+					default_config = ApplicationConfiguration(
+						bluetooth_config=BluetoothConfiguration(enabled=False),
+						audio_config=AudioConfiguration(audio=Audio.PIPEWIRE)
+					)
 					item._value_modified = False
-					item.default_value = None
+					item.default_value = default_config
+					# Set value to default if currently None
+					if item.value is None:
+						item.value = default_config
 				elif item.value is not None:
 					item.set_as_default()
 			except ValueError:
@@ -259,18 +266,11 @@ class GlobalMenu(AbstractMenu[None]):
 		
 		app_config = ApplicationMenu(preset).run()
 		
-		# Check if user modified any settings from defaults
-		bluetooth_is_default = (app_config.bluetooth_config is None or 
-		                       (app_config.bluetooth_config is not None and 
-		                        not app_config.bluetooth_config.enabled))  # Default is disabled
-		
-		audio_is_default = (app_config.audio_config is None or
-		                   (app_config.audio_config is not None and
-		                    app_config.audio_config.audio == Audio.PIPEWIRE))  # Default is PipeWire
-		
-		# Return None if both are at default values to show default checkmark
-		if bluetooth_is_default and audio_is_default:
-			return None
+		# If configuration is still at default values, mark the menu item as unmodified
+		if app_config.is_default_configuration():
+			# Find the app_config menu item and reset its modified flag
+			app_item = self._item_group.find_by_key('app_config')
+			app_item._value_modified = False
 		
 		return app_config
 

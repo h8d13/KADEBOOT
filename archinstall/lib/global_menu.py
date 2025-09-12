@@ -75,9 +75,9 @@ class GlobalMenu(AbstractMenu[None]):
 					item._value_modified = False
 					item.default_value = item.value
 				elif key == 'app_config':
-					# App config starts with pipewire as default
+					# App config default is None (shows defaults: Bluetooth disabled, Audio PipeWire)
 					item._value_modified = False
-					item.default_value = ApplicationConfiguration(audio_config=AudioConfiguration(audio=Audio.PIPEWIRE))
+					item.default_value = None
 				elif item.value is not None:
 					item.set_as_default()
 			except ValueError:

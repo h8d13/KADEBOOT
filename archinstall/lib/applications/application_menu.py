@@ -34,21 +34,33 @@ class ApplicationMenu(AbstractSubMenu[ApplicationConfiguration]):
 		return self._app_config
 
 	def _define_menu_options(self) -> list[MenuItem]:
-		return [
-			MenuItem(
-				text=tr('Bluetooth'),
-				action=select_bluetooth,
-				value=self._app_config.bluetooth_config,
-				preview_action=self._prev_bluetooth,
-				key='bluetooth_config',
-			),
-			MenuItem(
-				text=tr('Audio'),
-				action=select_audio,
-				preview_action=self._prev_audio,
-				key='audio_config',
-			),
-		]
+		bluetooth_item = MenuItem(
+			text=tr('Bluetooth'),
+			action=select_bluetooth,
+			value=self._app_config.bluetooth_config,
+			preview_action=self._prev_bluetooth,
+			key='bluetooth_config',
+		)
+		# Set default for bluetooth (disabled)
+		bluetooth_item.default_value = BluetoothConfiguration(enabled=False)
+		if bluetooth_item.value is None:
+			bluetooth_item.value = bluetooth_item.default_value
+			bluetooth_item._value_modified = False
+		
+		audio_item = MenuItem(
+			text=tr('Audio'),
+			action=select_audio,
+			value=self._app_config.audio_config,
+			preview_action=self._prev_audio,
+			key='audio_config',
+		)
+		# Set default for audio (PipeWire)
+		audio_item.default_value = AudioConfiguration(audio=Audio.PIPEWIRE)
+		if audio_item.value is None:
+			audio_item.value = audio_item.default_value
+			audio_item._value_modified = False
+		
+		return [bluetooth_item, audio_item]
 
 	def _prev_bluetooth(self, item: MenuItem) -> str | None:
 		if item.value is not None:

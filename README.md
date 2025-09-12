@@ -16,7 +16,7 @@ Boot Arch Linux Live ISO (using f10, f12 or del), get internet access, then:
 - No secureboot or set to `other OS`
 
 ```bash
-pacman -Sy --noconfirm git python-cryptography
+pacman -Sy git python-cryptography
 git clone https://github.com/h8d13/KADEBOOT
 
 cd KADEBOOT && ./install

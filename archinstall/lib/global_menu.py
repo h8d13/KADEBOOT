@@ -266,9 +266,8 @@ class GlobalMenu(AbstractMenu[None]):
 		
 		app_config = ApplicationMenu(preset).run()
 		
-		# If configuration is still at default values, mark the menu item as unmodified
+		# Only reset modified flag if still at true defaults
 		if app_config.is_default_configuration():
-			# Find the app_config menu item and reset its modified flag
 			app_item = self._item_group.find_by_key('app_config')
 			app_item._value_modified = False
 		

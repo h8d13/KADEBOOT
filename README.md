@@ -28,7 +28,7 @@ cd KADEBOOT && sudo ./install
 
 You will have 3 options: Chroot, Reboot or exit. Pick reboot.
 
-Go to BIOS again to switch to disk. And login this ugly SDDM screen using user you created earlier:
+Go to BIOS again to **switch to hard disk.** And login this ugly SDDM screen using user you created earlier:
 
 <img width="1200" height="675" alt="image" src="https://github.com/user-attachments/assets/c747de21-e1bb-4efc-9959-365b171a49c7" />
 
@@ -53,7 +53,7 @@ VARIANT=""
 
 Then run: `chmod +x post && sudo ./post`
 
-After ruuning the script it will restart one last time. And you are done !
+After ruuning the script it will restart one last time. **And you are done !**
 
 You should now see this beauty instead. 
 

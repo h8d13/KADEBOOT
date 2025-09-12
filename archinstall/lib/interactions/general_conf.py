@@ -146,6 +146,7 @@ def ask_additional_packages_to_install(
 	preset: list[str] = [],
 ) -> list[str]:
 	header = tr('Only packages such as base, base-devel, linux, linux-firmware, efibootmgr, git and optional profile packages are installed.') + '\n'
+	header = tr('+ Selections in the previous steps...') + '\n'
 	header += tr('Enter additional packages to install (comma-separated):') + '\n'
 	header += tr('Example: emacs, firefox, htop') + '\n'
 

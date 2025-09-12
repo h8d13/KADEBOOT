@@ -19,7 +19,7 @@ Boot Arch Linux Live ISO (using f10, f12 or del), get internet access, then:
 pacman -Sy --noconfirm git python-cryptography
 git clone https://github.com/h8d13/KADEBOOT
 
-cd KADEBOOT && sudo ./install
+cd KADEBOOT && ./install
 ```
 
 > The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. 
@@ -34,6 +34,7 @@ Go to BIOS again to **switch to hard disk.** And login this ugly SDDM screen usi
 
 ---
 Open the apps launcher > type `Konsole` 
+> I've taken the liberty to clone the other repo in sudo user 0's home. 
 
 ```
 cd KAES-ARCH/

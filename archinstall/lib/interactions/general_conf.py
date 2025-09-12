@@ -141,41 +141,6 @@ def select_archinstall_language(languages: list[Language], preset: Language) -> 
 		case ResultType.Reset:
 			raise ValueError('Language selection not handled')
 
-
-def ask_additional_packages_to_install(
-	preset: list[str] = [],
-) -> list[str]:
-	header = tr('Only packages such as base, base-devel, linux, linux-firmware, efibootmgr, git and optional profile packages are installed.') + '\n'
-	header = tr('+ Selections in the previous steps...') + '\n'
-	header += tr('Enter additional packages to install (comma-separated):') + '\n'
-	header += tr('Example: emacs, firefox, htop') + '\n'
-
-	# Convert preset list to comma-separated string
-	default_text = ', '.join(preset) if preset else ''
-
-	result = EditMenu(
-		tr('Additional packages'),
-		header=header,
-		alignment=Alignment.CENTER,
-		allow_skip=True,
-		allow_reset=True,
-		default_text=default_text,
-	).input()
-
-	match result.type_:
-		case ResultType.Skip:
-			return preset
-		case ResultType.Reset:
-			return []
-		case ResultType.Selection:
-			text = result.text().strip()
-			if not text:
-				return []
-			# Split by comma and clean up whitespace
-			packages = [pkg.strip() for pkg in text.split(',') if pkg.strip()]
-			return packages
-
-
 def add_number_of_parallel_downloads(preset: int | None = None) -> int | None:
 	max_recommended = 5
 

@@ -33,11 +33,9 @@ Go to BIOS again to **switch to hard disk.** And login this ugly SDDM screen usi
 <img width="1200" height="675" alt="image" src="https://github.com/user-attachments/assets/c747de21-e1bb-4efc-9959-365b171a49c7" />
 
 ---
-
 Open the apps launcher > type `Konsole` 
 
 ```
-git clone https://github.com/h8d13/KAES-ARCH
 cd KAES-ARCH/
 ``` 
 Edit the targets: user and kb using editor of your choice.

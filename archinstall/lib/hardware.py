@@ -52,9 +52,9 @@ class GfxPackage(Enum):
 	Xf86VideoAmdgpu = 'xf86-video-amdgpu'
 	Xf86VideoAti = 'xf86-video-ati'
 	Xf86VideoNouveau = 'xf86-video-nouveau'
-	XorgServer = 'xorg-server'
-	XorgXinit = 'xorg-xinit'
-
+	#XorgServer = 'xorg-server'
+	#XorgXinit = 'xorg-xinit'
+	## Already included in plasma-meta package. 
 
 class GfxDriver(Enum):
 	AllOpenSource = 'All open-source'
@@ -135,7 +135,6 @@ class GfxDriver(Enum):
 				]
 			case GfxDriver.IntelNvidiaHybrid:
 				packages += [
-					GfxPackage.Mesa,
 					GfxPackage.LibvaIntelDriver,
 					GfxPackage.IntelMediaDriver,
 					GfxPackage.VulkanIntel,

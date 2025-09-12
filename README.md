@@ -48,7 +48,7 @@ DTHEME=dark
 KB_LAYOUT=us
 VARIANT=""
 ```
-> Variant is optional, can be left empty. Applies for the current sudo user by default. Do check out some of the parts that you can configure (additional packages, removing stuff, etc). 
+> Variant is optional, can be left empty. Applies for the current sudo user by default. Do check out some of the parts that you can configure (additional packages, removing stuff, guest account, etc). 
 
 Then run: `sudo ./post`
 

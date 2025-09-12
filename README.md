@@ -24,7 +24,7 @@ cd KADEBOOT && sudo ./install
 
 ## After initial install
 
-You will have 3 options: Chroot, Reboot or exit. Pick exit.
+You will have 3 options: Chroot, Reboot or exit. Pick reboot.
 
 Go to BIOS again to switch to disk. And login this ugly SDDM screen using user you created earlier:
 

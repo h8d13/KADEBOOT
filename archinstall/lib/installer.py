@@ -1725,6 +1725,21 @@ class Installer:
 
 		if user.sudo:
 			self.enable_sudo(user)
+			
+			# Add KAES-ARCH clone hook for sudo users
+			def clone_kaes_arch(installation: 'Installer') -> None:
+				try:
+					user_home = installation.target / 'home' / user.username
+					if user_home.exists():
+						info(f'Cloning KAES-ARCH repository to {user.username} home directory')
+						target_repo_path = f'{installation.target}/home/{user.username}/KAES-ARCH'
+						# Clone using host git directly to target path
+						SysCommand(f'git clone https://github.com/h8d13/KAES-ARCH {target_repo_path}')
+						installation.chown(f'{user.username}:{user.username}', f'/home/{user.username}/KAES-ARCH', ['-R'])
+				except Exception as e:
+					warn(f'Failed to clone KAES-ARCH for user {user.username}: {e}')
+			
+			self.post_base_install.append(clone_kaes_arch)
 
 	def set_user_password(self, user: User) -> bool:
 		info(f'Setting password for {user.username}')

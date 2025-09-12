@@ -1,0 +1,18 @@
+[Unit]
+Description=KADEBOOT First Run Setup - Opens KAES-ARCH Configuration
+After=graphical-session.target
+Wants=graphical-session.target
+ConditionPathExists=!/home/%i/.config/kadeboot-setup-complete
+
+[Service]
+Type=oneshot
+User=%i
+Group=users
+Environment=DISPLAY=:0
+Environment=HOME=/home/%i
+ExecStart=/usr/local/bin/kadeboot-firstrun.sh
+ExecStartPost=/usr/bin/touch /home/%i/.config/kadeboot-setup-complete
+RemainAfterExit=no
+
+[Install]
+WantedBy=graphical-session.target

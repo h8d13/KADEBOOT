@@ -15,7 +15,6 @@ from .configuration import save_config
 from .hardware import SysInfo
 from .interactions.general_conf import (
 	add_number_of_parallel_downloads,
-	ask_additional_packages_to_install,
 	ask_for_a_timezone,
 	ask_hostname,
 	ask_ntp,

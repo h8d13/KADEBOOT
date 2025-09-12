@@ -22,7 +22,7 @@ git clone https://github.com/h8d13/KADEBOOT
 cd KADEBOOT && ./install
 ```
 
-> The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. 
+> The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. ALso needs `python-pyparted` and `python-pydantic` but these are included in official Arch ISO. 
 
 ## After initial install
 

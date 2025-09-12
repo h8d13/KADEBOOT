@@ -22,13 +22,17 @@ git clone https://github.com/h8d13/KADEBOOT
 cd KADEBOOT && ./install
 ```
 
-> The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. ALso needs `python-pyparted` and `python-pydantic` but these are included in official Arch ISO. 
+> The dependancy `python-cryptography` is used in LUKS encryption module for Disks section. Also needs `python-pyparted` and `python-pydantic` but these are included in official Arch ISO. 
 
 ## After initial install
 
 You will have 3 options: Chroot, Reboot or exit. Pick reboot.
 
-Go to BIOS again to **switch to hard disk.** And login this ugly SDDM screen using user you created earlier:
+Go to BIOS again to **switch to hard disk.** 
+
+---
+
+Login this ugly SDDM screen using user you created earlier (you will only see this once!)
 
 <img width="1200" height="675" alt="image" src="https://github.com/user-attachments/assets/c747de21-e1bb-4efc-9959-365b171a49c7" />
 

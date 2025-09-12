@@ -266,15 +266,15 @@ class GlobalMenu(AbstractMenu[None]):
 		
 		app_config = ApplicationMenu(preset).run()
 		
-		# Simple logic: only show V if bluetooth is enabled, otherwise show D
+		# Simple logic: mark as unmodified if bluetooth is disabled (default)
 		bluetooth_enabled = app_config.bluetooth_config and app_config.bluetooth_config.enabled
 		
 		if not bluetooth_enabled:
-			# Bluetooth is disabled (default), return None to show D
-			return None
-		else:
-			# Bluetooth is enabled (modified), return config to show V
-			return app_config
+			# Bluetooth is disabled (default), mark as unmodified to show D
+			app_item = self._item_group.find_by_key('app_config')
+			app_item._value_modified = False
+		
+		return app_config
 
 	def _select_authentication(self, preset: AuthenticationConfiguration | None) -> AuthenticationConfiguration | None:
 		auth_config = AuthenticationMenu(preset).run()

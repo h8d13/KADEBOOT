@@ -1249,10 +1249,12 @@ class SelectMenu[ValueT](AbstractCurses[ValueT]):
 					if item:
 						if item.action:
 							old_value = item.value
-							item.value = item.action(item.value)
-							# Mark as modified if value changed
-							if old_value != item.value:
+							new_value = item.action(item.value)
+							# Only mark as modified if the value actually changed
+							if old_value != new_value:
+								item.value = new_value
 								item.mark_as_modified()
+							# If value unchanged, don't mark as modified
 
 						if self._item_group.is_mandatory_fulfilled():
 							return Result(ResultType.Selection, self._item_group.focus_item)

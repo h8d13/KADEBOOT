@@ -145,9 +145,9 @@ def select_archinstall_language(languages: list[Language], preset: Language) -> 
 def ask_additional_packages_to_install(
 	preset: list[str] = [],
 ) -> list[str]:
-	header = tr('Only packages such as base, base-devel, linux, linux-firmware, efibootmgr and optional profile packages are installed.') + '\n'
+	header = tr('Only packages such as base, base-devel, linux, linux-firmware, efibootmgr, git and optional profile packages are installed.') + '\n'
 	header += tr('Enter additional packages to install (comma-separated):') + '\n'
-	header += tr('Example: git, emacs') + '\n'
+	header += tr('Example: emacs, firefox, htop') + '\n'
 
 	# Convert preset list to comma-separated string
 	default_text = ', '.join(preset) if preset else ''

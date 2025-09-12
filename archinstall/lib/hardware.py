@@ -83,7 +83,7 @@ class GfxDriver(Enum):
 		return text
 
 	def gfx_packages(self) -> list[GfxPackage]:
-		packages = [GfxPackage.XorgServer, GfxPackage.XorgXinit]
+		packages = []
 
 		match self:
 			case GfxDriver.AllOpenSource:

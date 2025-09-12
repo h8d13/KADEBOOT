@@ -34,6 +34,7 @@ class ApplicationMenu(AbstractSubMenu[ApplicationConfiguration]):
 		return self._app_config
 
 	def _define_menu_options(self) -> list[MenuItem]:
+		# Bluetooth: disabled by default, show D when disabled, V when enabled
 		bluetooth_item = MenuItem(
 			text=tr('Bluetooth'),
 			action=select_bluetooth,
@@ -41,12 +42,16 @@ class ApplicationMenu(AbstractSubMenu[ApplicationConfiguration]):
 			preview_action=self._prev_bluetooth,
 			key='bluetooth_config',
 		)
-		# Set default for bluetooth (disabled)
 		bluetooth_item.default_value = BluetoothConfiguration(enabled=False)
 		if bluetooth_item.value is None:
 			bluetooth_item.value = bluetooth_item.default_value
-		bluetooth_item._value_modified = False
+			bluetooth_item._value_modified = False
+		else:
+			# Check if current value matches default
+			is_enabled = bluetooth_item.value.enabled
+			bluetooth_item._value_modified = is_enabled  # Only modified if enabled
 		
+		# Audio: always PipeWire, always show D (never modified)
 		audio_item = MenuItem(
 			text=tr('Audio'),
 			action=select_audio,
@@ -54,11 +59,10 @@ class ApplicationMenu(AbstractSubMenu[ApplicationConfiguration]):
 			preview_action=self._prev_audio,
 			key='audio_config',
 		)
-		# Set default for audio (PipeWire)
 		audio_item.default_value = AudioConfiguration(audio=Audio.PIPEWIRE)
 		if audio_item.value is None:
 			audio_item.value = audio_item.default_value
-		audio_item._value_modified = False
+		audio_item._value_modified = False  # Always show D since only one option
 		
 		return [bluetooth_item, audio_item]
 

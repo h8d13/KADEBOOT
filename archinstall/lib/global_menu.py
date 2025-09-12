@@ -259,9 +259,17 @@ class GlobalMenu(AbstractMenu[None]):
 		
 		app_config = ApplicationMenu(preset).run()
 		
-		# Only Bluetooth can be configured (audio is always PipeWire)
-		# Return None if bluetooth is not configured to show default checkmark
-		if app_config.bluetooth_config is None:
+		# Check if user modified any settings from defaults
+		bluetooth_is_default = (app_config.bluetooth_config is None or 
+		                       (app_config.bluetooth_config is not None and 
+		                        not app_config.bluetooth_config.enabled))  # Default is disabled
+		
+		audio_is_default = (app_config.audio_config is None or
+		                   (app_config.audio_config is not None and
+		                    app_config.audio_config.audio == Audio.PIPEWIRE))  # Default is PipeWire
+		
+		# Return None if both are at default values to show default checkmark
+		if bluetooth_is_default and audio_is_default:
 			return None
 		
 		return app_config

@@ -59,6 +59,7 @@ You should now see this beauty instead.
 
 <img width="1281" height="823" alt="image" src="https://github.com/user-attachments/assets/f06fe936-4ddf-44a9-a118-87f220f6ed6e" />
 
+---
 
 For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 

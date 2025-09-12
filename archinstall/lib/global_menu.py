@@ -523,10 +523,6 @@ class GlobalMenu(AbstractMenu[None]):
 		
 		return profile_config
 
-	def _select_additional_packages(self, preset: list[str]) -> list[str]:
-		packages = ask_additional_packages_to_install(preset)
-		return packages
-
 	def _mirror_configuration(self, preset: MirrorConfiguration | None = None) -> MirrorConfiguration:
 		mirror_configuration = MirrorMenu(preset=preset).run()
 

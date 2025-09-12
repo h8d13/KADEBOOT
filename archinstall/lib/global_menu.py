@@ -266,13 +266,15 @@ class GlobalMenu(AbstractMenu[None]):
 		
 		app_config = ApplicationMenu(preset).run()
 		
-		# Simple logic: mark as unmodified if bluetooth is disabled (default)
-		bluetooth_enabled = app_config.bluetooth_config and app_config.bluetooth_config.enabled
+		# Simple logic: mark as unmodified ONLY if bluetooth is disabled (default)
+		bluetooth_enabled = (app_config.bluetooth_config is not None and 
+		                     app_config.bluetooth_config.enabled)
 		
 		if not bluetooth_enabled:
 			# Bluetooth is disabled (default), mark as unmodified to show D
 			app_item = self._item_group.find_by_key('app_config')
 			app_item._value_modified = False
+		# If bluetooth is enabled, leave _value_modified = True (shows V)
 		
 		return app_config
 

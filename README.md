@@ -62,7 +62,12 @@ You should now see this beauty instead.
 
 For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
-Boot ISO → Run KADEBOOT → Reboot → Run KAES-ARCH post script → Use PACTOPAC for ongoing management if needed (or use command line if preferred). But it's all handled from here automatically you wont need to do much but follow the instructions above and pick desired values. 
+
+### KADEBOOT under the hood
+
+Boot ISO → Run KADEBOOT → Reboot → (Clones for you) KAES-ARCH → Run post script → Use PACTOPAC for ongoing management if needed (or use command line if preferred).
+
+But it's all handled from here automatically you wont need to do much but follow the instructions above and pick desired values. 
 
 ## Modifications
 

@@ -185,13 +185,6 @@ class GlobalMenu(AbstractMenu[None]):
 				key='ntp',
 			),
 			MenuItem(
-				text=tr('Additional packages'),
-				action=self._select_additional_packages,
-				value=[],
-				preview_action=self._prev_additional_pkgs,
-				key='packages',
-			),
-			MenuItem(
 				text='',
 			),
 			MenuItem(

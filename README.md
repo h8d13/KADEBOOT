@@ -62,6 +62,8 @@ You should now see this beauty instead.
 
 For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
+Boot ISO → Run KADEBOOT → Reboot → Run KAES-ARCH post script → Use PACTOPAC for ongoing management if needed (or use command line if preferred). 
+
 ## Modifications
 
 - Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py`

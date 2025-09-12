@@ -45,7 +45,7 @@ class ApplicationMenu(AbstractSubMenu[ApplicationConfiguration]):
 		bluetooth_item.default_value = BluetoothConfiguration(enabled=False)
 		if bluetooth_item.value is None:
 			bluetooth_item.value = bluetooth_item.default_value
-			bluetooth_item._value_modified = False
+		bluetooth_item._value_modified = False
 		
 		audio_item = MenuItem(
 			text=tr('Audio'),
@@ -58,7 +58,7 @@ class ApplicationMenu(AbstractSubMenu[ApplicationConfiguration]):
 		audio_item.default_value = AudioConfiguration(audio=Audio.PIPEWIRE)
 		if audio_item.value is None:
 			audio_item.value = audio_item.default_value
-			audio_item._value_modified = False
+		audio_item._value_modified = False
 		
 		return [bluetooth_item, audio_item]
 

@@ -235,6 +235,9 @@ class MenuItemGroup:
 					text = f'{text}{spacing}{Chars.Default}'
 				else:
 					text = f'{text}{spacing}{Chars.Check}'
+			elif item.has_default_and_unmodified():
+				# Show default mark for empty values that are defaults (like empty package list)
+				text = f'{text}{spacing}{Chars.Default}'
 			else:
 				text = item.text
 
@@ -272,6 +275,10 @@ class MenuItemGroup:
 				else:
 					text = f'{text}{spacing}{Chars.Check}'
 					style_info = 'check'
+			elif item.has_default_and_unmodified():
+				# Show default mark for empty values that are defaults (like empty package list)
+				text = f'{text}{spacing}{Chars.Default}'
+				style_info = 'default'
 			else:
 				text = item.text
 

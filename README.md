@@ -68,7 +68,9 @@ For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 **Boot ISO** → Run KADEBOOT (Archinstall but modified for KDE) → **Reboot** → (Clones for you) KAES-ARCH → Run post script → **Reboot** → Use PACTOAPC settings page to quickly setup → **Normal usages** → Use PACTOPAC for ongoing management if needed (or use command line if familiar).
 
 > This set-up with a rolling release is ideal because we have single sources of truth for each critical aspect. Also I like to keep my work on the side and be able to brick an install if needed in 15 minutes. 
-But it's all handled from here automatically you wont need to do much but follow the instructions above and pick desired values. 
+But it's all handled from here automatically you wont need to do much but follow the instructions above and pick desired values.
+
+We can also easily allow for self-upgrades by simply running `git pull` for example (especially for package manager or any added features). 
 
 ## Modifications
 

@@ -65,6 +65,7 @@ class GlobalMenu(AbstractMenu[None]):
 			'parallel_downloads', # 0
 			'timezone',      # 'UTC'
 			'ntp',          # True
+			'packages',      # ['git']
 		]
 		
 		for key in items_with_defaults:

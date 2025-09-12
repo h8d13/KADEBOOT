@@ -470,26 +470,6 @@ class Installer:
 				os.makedirs(f'{self.target}/{os.path.dirname(absolute_logfile)}')
 
 			shutil.copy2(absolute_logfile, f'{self.target}/{absolute_logfile}')
-			
-			# Also copy to KAES-ARCH directory if it exists
-			try:
-				homes_dir = self.target / 'home'
-				if homes_dir.exists():
-					for user_dir in homes_dir.iterdir():
-						kaes_arch_dir = user_dir / 'KAES-ARCH'
-						if kaes_arch_dir.exists():
-							log_filename = os.path.basename(absolute_logfile)
-							kaes_log_path = kaes_arch_dir / f'kadeboot-install-{log_filename}'
-							shutil.copy2(absolute_logfile, str(kaes_log_path))
-							
-							# Set proper ownership (get username from directory name)
-							username = user_dir.name
-							SysCommand(f'chown {username}:{username} {kaes_log_path}')
-							
-							info(f'Install log copied to {kaes_log_path}')
-							break  # Only copy to first KAES-ARCH directory found
-			except Exception as e:
-				debug(f'Failed to copy log to KAES-ARCH directory: {e}')
 
 		return True
 

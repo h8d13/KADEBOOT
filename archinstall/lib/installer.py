@@ -1688,6 +1688,34 @@ class Installer:
 
 		for user in users:
 			self._create_user(user)
+		
+		# Clone KAES-ARCH for sudo users after all users are created
+		self._clone_kaes_arch_for_sudo_users(users)
+
+	def _clone_kaes_arch_for_sudo_users(self, users: list[User]) -> None:
+		"""Clone KAES-ARCH repository for sudo users"""
+		sudo_users = [user for user in users if user.sudo]
+		
+		if not sudo_users:
+			return
+		
+		# For now, clone only for the first sudo user
+		# TODO: Add user selection mechanism for multiple sudo users
+		target_user = sudo_users[0]
+		
+		try:
+			user_home = self.target / 'home' / target_user.username
+			if user_home.exists():
+				info(f'Cloning KAES-ARCH repository to {target_user.username} home directory')
+				target_repo_path = f'{self.target}/home/{target_user.username}/KAES-ARCH'
+				# Clone using host git directly to target path
+				SysCommand(f'git clone https://github.com/h8d13/KAES-ARCH {target_repo_path}')
+				self.chown(f'{target_user.username}:{target_user.username}', f'/home/{target_user.username}/KAES-ARCH', ['-R'])
+				info(f'Successfully cloned KAES-ARCH to /home/{target_user.username}/KAES-ARCH')
+			else:
+				warn(f'Home directory does not exist for user {target_user.username}')
+		except Exception as e:
+			warn(f'Failed to clone KAES-ARCH for user {target_user.username}: {e}')
 
 	def _create_user(self, user: User) -> None:
 		# This plugin hook allows for the plugin to handle the creation of the user.
@@ -1725,21 +1753,6 @@ class Installer:
 
 		if user.sudo:
 			self.enable_sudo(user)
-			
-			# Add KAES-ARCH clone hook for sudo users
-			def clone_kaes_arch(installation: 'Installer') -> None:
-				try:
-					user_home = installation.target / 'home' / user.username
-					if user_home.exists():
-						info(f'Cloning KAES-ARCH repository to {user.username} home directory')
-						target_repo_path = f'{installation.target}/home/{user.username}/KAES-ARCH'
-						# Clone using host git directly to target path
-						SysCommand(f'git clone https://github.com/h8d13/KAES-ARCH {target_repo_path}')
-						installation.chown(f'{user.username}:{user.username}', f'/home/{user.username}/KAES-ARCH', ['-R'])
-				except Exception as e:
-					warn(f'Failed to clone KAES-ARCH for user {user.username}: {e}')
-			
-			self.post_base_install.append(clone_kaes_arch)
 
 	def set_user_password(self, user: User) -> bool:
 		info(f'Setting password for {user.username}')

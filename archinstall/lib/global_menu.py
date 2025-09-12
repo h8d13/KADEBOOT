@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import override
 
 from archinstall.lib.disk.disk_menu import DiskLayoutConfigurationMenu
-from archinstall.lib.models.application import ApplicationConfiguration, Audio, AudioConfiguration
+from archinstall.lib.models.application import ApplicationConfiguration, Audio, AudioConfiguration, BluetoothConfiguration
 from archinstall.lib.models.authentication import AuthenticationConfiguration
 from archinstall.lib.models.device import DiskLayoutConfiguration, DiskLayoutType, EncryptionType, FilesystemType, PartitionModification
 from archinstall.tui.menu_item import MenuItem, MenuItemGroup
@@ -136,7 +136,7 @@ class GlobalMenu(AbstractMenu[None]):
 			MenuItem(
 				text=tr('Applications'),
 				action=self._select_applications,
-				value=ApplicationConfiguration(audio_config=AudioConfiguration(audio=Audio.PIPEWIRE)),
+				value=None,
 				preview_action=self._prev_applications,
 				key='app_config',
 			),
@@ -253,7 +253,17 @@ class GlobalMenu(AbstractMenu[None]):
 
 
 	def _select_applications(self, preset: ApplicationConfiguration | None) -> ApplicationConfiguration | None:
+		# If no preset, use default values
+		if preset is None:
+			preset = ApplicationConfiguration()
+		
 		app_config = ApplicationMenu(preset).run()
+		
+		# Only Bluetooth can be configured (audio is always PipeWire)
+		# Return None if bluetooth is not configured to show default checkmark
+		if app_config.bluetooth_config is None:
+			return None
+		
 		return app_config
 
 	def _select_authentication(self, preset: AuthenticationConfiguration | None) -> AuthenticationConfiguration | None:
@@ -322,23 +332,30 @@ class GlobalMenu(AbstractMenu[None]):
 		return None
 
 	def _prev_applications(self, item: MenuItem) -> str | None:
+		output = ''
+		
 		if item.value:
 			app_config: ApplicationConfiguration = item.value
-			output = ''
 
 			if app_config.bluetooth_config:
 				output += f'{tr("Bluetooth")}: '
 				output += tr('Enabled') if app_config.bluetooth_config.enabled else tr('Disabled')
-				output += '\n'
+			else:
+				output += f'{tr("Bluetooth")}: {tr("Disabled")} (default)'
+			output += '\n'
 
 			if app_config.audio_config:
 				audio_config = app_config.audio_config
 				output += f'{tr("Audio")}: {audio_config.audio.value}'
-				output += '\n'
+			else:
+				output += f'{tr("Audio")}: {Audio.PIPEWIRE.value} (default)'
+			output += '\n'
+		else:
+			# Show defaults when no configuration is set
+			output += f'{tr("Bluetooth")}: {tr("Disabled")} (default)\n'
+			output += f'{tr("Audio")}: {Audio.PIPEWIRE.value} (default)\n'
 
-			return output
-
-		return None
+		return output.rstrip('\n')
 
 	def _prev_tz(self, item: MenuItem) -> str | None:
 		if item.value:

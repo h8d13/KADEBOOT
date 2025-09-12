@@ -123,17 +123,8 @@ def perform_installation(mountpoint: Path) -> None:
 			profile_handler.install_profile_config(installation, profile_config)
 
 		# Always install git as a mandatory package
-		mandatory_packages = ['git']
-		
-		if config.packages and config.packages[0] != '':
-			# Ensure git is included if not already present
-			if 'git' not in config.packages:
-				all_packages = mandatory_packages + config.packages
-			else:
-				all_packages = config.packages
-			installation.add_additional_packages(all_packages)
-		else:
-			installation.add_additional_packages(mandatory_packages)
+		mandatory_package = ['git']
+        installation.add_additional_packages(mandatory_package)
 
 		if timezone := config.timezone:
 			installation.set_timezone(timezone)

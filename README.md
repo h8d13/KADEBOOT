@@ -75,6 +75,8 @@ For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 - Many defaults on KDE are icky by default for desktop/laptop usage > Post script [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 - Don't know how to use my system (gaming, flathub, etc) > GUI package manager + Settings [PACTOPAC](https://github.com/h8d13/PACTOPAC)
 
+This combines all 3 repos into a single TUI and 5 extra commands (see above). 
+
 ### Flow
 
 **Boot ISO** → Run KADEBOOT (Archinstall but modified for KDE) → **Reboot** → (Clones for you) KAES-ARCH → Run post script (Many improvements to defaults) → (Clones for you) PACTOPAC →  **Reboot** → Use PACTOAPC settings page to quickly setup → **Normal usages** → Use PACTOPAC for ongoing management if needed (or use command line if familiar).

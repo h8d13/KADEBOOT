@@ -104,6 +104,7 @@ class GlobalMenu(AbstractMenu[None]):
 				text=tr('Mirrors and repositories'),
 				action=self._mirror_configuration,
 				preview_action=self._prev_mirror_config,
+				mandatory=True,
 				key='mirror_config',
 			),
 			MenuItem(
@@ -131,6 +132,7 @@ class GlobalMenu(AbstractMenu[None]):
 				text=tr('Authentication'),
 				action=self._select_authentication,
 				preview_action=self._prev_authentication,
+				mandatory=True,
 				key='auth_config',
 			),
 			MenuItem(
@@ -138,6 +140,7 @@ class GlobalMenu(AbstractMenu[None]):
 				action=self._select_profile,
 				preview_action=self._prev_profile,
 				key='profile_config',
+				mandatory=True,
 				value=None,  # Will be populated by config sync
 			),
 			MenuItem(

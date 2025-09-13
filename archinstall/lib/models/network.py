@@ -22,7 +22,7 @@ class NicType(Enum):
 			case NicType.ISO:
 				return tr('Copy ISO network configuration to installation')
 			case NicType.NM:
-				return tr('Use NetworkManager (necessary to configure internet graphically in GNOME and KDE Plasma)')
+				return tr('Use NetworkManager (needed for GUI network setup in KDE Plasma)')
 			case NicType.MANUAL:
 				return tr('Manual configuration')
 

@@ -93,4 +93,5 @@ We can also easily allow for self-upgrades by simply running `git pull` for exam
 - Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py`
 - Stripped a lot of code for defaults to be simpler. And for display.
 - Simplified heavily for KDE specifics. 
-
+- Logging inside dir
+- Auto-save/Load configs

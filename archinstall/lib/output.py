@@ -147,7 +147,7 @@ class Journald:
 
 
 class Logger:
-	def __init__(self, path: Path = Path('/var/log/archinstall')) -> None:
+	def __init__(self, path: Path = Path.cwd() / 'logs') -> None:
 		self._path = path
 
 	@property

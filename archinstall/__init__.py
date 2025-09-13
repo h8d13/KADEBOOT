@@ -45,7 +45,7 @@ def _fetch_arch_db() -> None:
 		error('Failed to sync Arch Linux package database.')
 		if 'could not resolve host' in str(e).lower():
 			error('Most likely due to a missing network connection or DNS issue.')
-		error('Run archinstall --debug and check /var/log/archinstall/install.log for details.')
+		error('Run archinstall --debug and check logs/install.log for details.')
 
 		debug(f'Failed to sync Arch Linux package database: {e}')
 		exit(1)

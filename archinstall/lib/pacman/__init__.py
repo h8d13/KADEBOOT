@@ -76,7 +76,7 @@ class Pacman:
 
 		self.ask(
 			'Could not strap in packages',
-			'Pacstrap failed. See /var/log/archinstall/install.log or above message for error details',
+			'Pacstrap failed. See logs/install.log or above message for error details',
 			SysCommand,
 			f'pacstrap -C /etc/pacman.conf -K {self.target} {" ".join(packages)} --noconfirm',
 			peek_output=True,

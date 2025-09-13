@@ -64,11 +64,16 @@ def _check_for_saved_config() -> None:
 				except Exception as e:
 					print(f'Failed to load saved selections: {e}')
 		elif choice == 'fresh':
-			# Remove the saved config file
+			# Remove both saved config files
 			config_file = Path.cwd() / 'user_configuration.json'
+			creds_file = Path.cwd() / 'user_credentials.json'
+
 			if config_file.exists():
 				config_file.unlink()
-				print('Saved configuration cleared - starting fresh')
+			if creds_file.exists():
+				creds_file.unlink()
+
+			print('Saved configuration cleared - starting fresh')
 
 
 def ask_user_questions() -> None:

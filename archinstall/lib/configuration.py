@@ -245,13 +245,13 @@ def save_config(config: ArchConfig) -> None:
 
 
 def auto_save_config(config: ArchConfig) -> bool:
-	"""Auto-save config to KADEBOOT folder without prompting"""
+	"""Auto-save config and credentials to KADEBOOT folder without prompting"""
 	try:
 		config_output = ConfigurationOutput(config)
 		kadeboot_path = Path.cwd()  # Current working directory (KADEBOOT folder)
 
-		# Save just the user config to the KADEBOOT folder
-		config_output.save_user_config(kadeboot_path)
+		# Save both user config and credentials to the KADEBOOT folder
+		config_output.save(kadeboot_path, creds=True, password=None)
 		return True
 	except Exception as e:
 		print(f'Failed to auto-save config: {e}')
@@ -265,12 +265,25 @@ def has_saved_config() -> bool:
 
 
 def load_saved_config() -> dict | None:
-	"""Load saved config from KADEBOOT folder"""
+	"""Load saved config and credentials from KADEBOOT folder"""
 	try:
+		config_data = {}
+
+		# Load main config
 		config_file = Path.cwd() / 'user_configuration.json'
 		if config_file.exists():
 			with open(config_file, 'r') as f:
-				return json.load(f)
+				config_data.update(json.load(f))
+
+		# Load credentials if they exist (follows same pattern as args.py)
+		creds_file = Path.cwd() / 'user_credentials.json'
+		if creds_file.exists():
+			with open(creds_file, 'r') as f:
+				creds_data = json.load(f)
+				config_data.update(creds_data)
+
+		return config_data if config_data else None
+
 	except Exception as e:
 		print(f'Failed to load saved config: {e}')
 	return None

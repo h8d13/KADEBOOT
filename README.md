@@ -71,9 +71,9 @@ For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
 ### Solving problems one by one
 
-- Misconfiguration of a single thing in archisntall could result in KDE not working as intended > Custom archinstall script
-- Many defaults on KDE are icky by default for desktop/laptop usage > Post script
-- Don't know how to use my system (gaming, flathub, etc) > GUI package manager + Settings
+- Misconfiguration of a single thing in archisntall could result in KDE not working as intended > Custom archinstall script [KADEBOOT](https://github.com/h8d13/KADEBOOT)
+- Many defaults on KDE are icky by default for desktop/laptop usage > Post script [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
+- Don't know how to use my system (gaming, flathub, etc) > GUI package manager + Settings [PACTOPAC](https://github.com/h8d13/PACTOPAC)
 
 ### Flow
 

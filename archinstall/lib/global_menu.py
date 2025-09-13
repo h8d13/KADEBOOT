@@ -600,11 +600,13 @@ class GlobalMenu(AbstractMenu[None]):
 
 			if choice == 'save_abort':
 				success, saved_files = auto_save_config(self._arch_config)
-				if success and saved_files:
-					print('Selections saved to:')
-					for file in saved_files:
-						print(f'  - {file}')
-					print('You can resume later by running the installer again.')
+				if success:
+					# Check if credentials are actually present (not just empty JSON)
+					config_output = ConfigurationOutput(self._arch_config)
+					creds_json = config_output.user_credentials_to_json()
+					has_creds = creds_json and creds_json.strip() != '{}'
+					creds_status = "✓" if has_creds else "✗ (empty)"
+					print(f'Saved: user_configuration.json ✓, user_credentials.json {creds_status} - Resume by running installer again.')
 				else:
 					print('Failed to save selections.')
 				exit(1)

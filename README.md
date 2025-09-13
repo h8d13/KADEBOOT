@@ -12,6 +12,8 @@ Perfect for users who know they want KDE and it's dependencies **(NetworkManager
 
 ## Installation
 
+**Pre-req:** 1 USB (minimum 2GB), 1 target Drive (minimum 16GB). 
+
 Boot Arch Linux Live ISO (using f10, f12 or del), get internet access, then:
 - No secureboot or set to `other OS`
 

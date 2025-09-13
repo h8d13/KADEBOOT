@@ -242,3 +242,35 @@ def save_config(config: ArchConfig) -> None:
 			config_output.save_user_creds(dest_path, password=enc_password)
 		case 'all':
 			config_output.save(dest_path, creds=True, password=enc_password)
+
+
+def auto_save_config(config: ArchConfig) -> bool:
+	"""Auto-save config to KADEBOOT folder without prompting"""
+	try:
+		config_output = ConfigurationOutput(config)
+		kadeboot_path = Path.cwd()  # Current working directory (KADEBOOT folder)
+
+		# Save just the user config to the KADEBOOT folder
+		config_output.save_user_config(kadeboot_path)
+		return True
+	except Exception as e:
+		print(f'Failed to auto-save config: {e}')
+		return False
+
+
+def has_saved_config() -> bool:
+	"""Check if there's a saved config in KADEBOOT folder"""
+	config_file = Path.cwd() / 'user_configuration.json'
+	return config_file.exists()
+
+
+def load_saved_config() -> dict | None:
+	"""Load saved config from KADEBOOT folder"""
+	try:
+		config_file = Path.cwd() / 'user_configuration.json'
+		if config_file.exists():
+			with open(config_file, 'r') as f:
+				return json.load(f)
+	except Exception as e:
+		print(f'Failed to load saved config: {e}')
+	return None

@@ -201,7 +201,7 @@ class GlobalMenu(AbstractMenu[None]):
 			),
 			MenuItem(
 				text=tr('Abort'),
-				action=lambda x: exit(1),
+				action=self._handle_abort,
 				key=f'{CONFIG_KEY}_abort',
 			),
 		]
@@ -567,3 +567,45 @@ class GlobalMenu(AbstractMenu[None]):
 			output += f'{title}:\n\n{table}'
 
 		return output.strip()
+
+	def _handle_abort(self, preset: None) -> None:
+		"""Handle abort with option to save selections"""
+		from ..tui.curses_menu import SelectMenu
+		from ..tui.menu_item import MenuItem, MenuItemGroup
+		from ..tui.result import ResultType
+		from ..tui.types import Alignment
+		from .configuration import auto_save_config
+
+		# Sync current selections to config
+		self.sync_all_to_config()
+
+		items = [
+			MenuItem(text=tr('Save selections and abort'), value='save_abort'),
+			MenuItem(text=tr('Abort without saving'), value='abort_only'),
+			MenuItem(text=tr('Cancel abort'), value='cancel'),
+		]
+
+		group = MenuItemGroup(items)
+		group.focus_item = group.items[0]  # Focus on save option
+
+		result = SelectMenu[str](
+			group,
+			header=tr('You are about to abort the installation.'),
+			alignment=Alignment.CENTER,
+			allow_skip=False,
+		).run()
+
+		if result.type_ == ResultType.Selection:
+			choice = result.get_value()
+
+			if choice == 'save_abort':
+				if auto_save_config(self._arch_config):
+					print('Selections saved to user_configuration.json. You can resume later.')
+				else:
+					print('Failed to save selections.')
+				exit(1)
+			elif choice == 'abort_only':
+				exit(1)
+			# If 'cancel', just return to menu
+
+		return None

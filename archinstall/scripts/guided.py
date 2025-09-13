@@ -24,6 +24,53 @@ from archinstall.lib.translationhandler import tr
 from archinstall.tui import Tui
 
 
+def _check_for_saved_config() -> None:
+	"""Check for saved config and offer to resume"""
+	from archinstall.lib.configuration import has_saved_config, load_saved_config
+	from archinstall.lib.args import ArchConfig
+	from archinstall.tui.curses_menu import SelectMenu
+	from archinstall.tui.menu_item import MenuItem, MenuItemGroup
+	from archinstall.tui.result import ResultType
+	from archinstall.tui.types import Alignment
+
+	if not has_saved_config() or arch_config_handler.args.silent:
+		return
+
+	items = [
+		MenuItem(text=tr('Resume from saved selections'), value='resume'),
+		MenuItem(text=tr('Start fresh'), value='fresh'),
+	]
+
+	group = MenuItemGroup(items)
+	group.focus_item = group.items[0]  # Focus on resume
+
+	result = SelectMenu[str](
+		group,
+		header=tr('Saved configuration found in user_configuration.json.') + '\n' + tr('What would you like to do?'),
+		alignment=Alignment.CENTER,
+		allow_skip=False,
+	).run()
+
+	if result.type_ == ResultType.Selection:
+		choice = result.get_value()
+
+		if choice == 'resume':
+			cached_config = load_saved_config()
+			if cached_config:
+				try:
+					new_config = ArchConfig.from_config(cached_config, arch_config_handler.args)
+					arch_config_handler._config = new_config
+					print('Saved selections loaded successfully')
+				except Exception as e:
+					print(f'Failed to load saved selections: {e}')
+		elif choice == 'fresh':
+			# Remove the saved config file
+			config_file = Path.cwd() / 'user_configuration.json'
+			if config_file.exists():
+				config_file.unlink()
+				print('Saved configuration cleared - starting fresh')
+
+
 def ask_user_questions() -> None:
 	"""
 	First, we'll ask the user for a bunch of user input.
@@ -35,6 +82,9 @@ def ask_user_questions() -> None:
 	# Version check removed - custom KDE-only installer
 
 	with Tui():
+		# Check for saved config and offer to resume
+		_check_for_saved_config()
+
 		global_menu = GlobalMenu(arch_config_handler.config)
 
 		if not arch_config_handler.args.advanced:

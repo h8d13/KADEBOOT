@@ -599,8 +599,12 @@ class GlobalMenu(AbstractMenu[None]):
 			choice = result.get_value()
 
 			if choice == 'save_abort':
-				if auto_save_config(self._arch_config):
-					print('Selections saved to user_configuration.json. You can resume later.')
+				success, saved_files = auto_save_config(self._arch_config)
+				if success and saved_files:
+					print('Selections saved to:')
+					for file in saved_files:
+						print(f'  - {file}')
+					print('You can resume later by running the installer again.')
 				else:
 					print('Failed to save selections.')
 				exit(1)

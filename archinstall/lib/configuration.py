@@ -244,18 +244,29 @@ def save_config(config: ArchConfig) -> None:
 			config_output.save(dest_path, creds=True, password=enc_password)
 
 
-def auto_save_config(config: ArchConfig) -> bool:
-	"""Auto-save config and credentials to KADEBOOT folder without prompting"""
+def auto_save_config(config: ArchConfig) -> tuple[bool, list[str]]:
+	"""Auto-save config and credentials to KADEBOOT folder without prompting
+	Returns: (success, list of saved files)
+	"""
 	try:
 		config_output = ConfigurationOutput(config)
 		kadeboot_path = Path.cwd()  # Current working directory (KADEBOOT folder)
+		saved_files = []
 
-		# Save both user config and credentials to the KADEBOOT folder
-		config_output.save(kadeboot_path, creds=True, password=None)
-		return True
+		# Always save user config
+		config_output.save_user_config(kadeboot_path)
+		saved_files.append('user_configuration.json')
+
+		# Only save credentials if there are any (not just empty JSON)
+		creds_json = config_output.user_credentials_to_json()
+		if creds_json and creds_json.strip() != '{}':
+			config_output.save_user_creds(kadeboot_path, password=None)
+			saved_files.append('user_credentials.json')
+
+		return True, saved_files
 	except Exception as e:
 		print(f'Failed to auto-save config: {e}')
-		return False
+		return False, []
 
 
 def has_saved_config() -> bool:

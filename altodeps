@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# KADEBOOT system dep check for installs without a USB.
+MISSING_REQUIRED=()
+MISSING_OPTIONAL=()
+MISSING_SANITY=()
+
+REQUIRED_PACKAGES=(
+    "arch-install-scripts"
+    "grub"
+    "mkinitcpio"
+    "python-cryptography"
+    "pciutils"
+    "dosfstools"
+)
+# Optional packages that might be missing
+OPTIONAL_PACKAGES=(
+    "btrfs-progs"
+    "cryptsetup"
+)
+# Usually installed packages (Or weird distro)
+SANITY_CHECK_PACKAGES=(
+    "coreutils"
+    "e2fsprogs"
+    "glibc"
+    "shadow"
+    "systemd"
+    "util-linux"
+)
+check_package() {
+    if pacman -Qi "$1" &>/dev/null; then
+        return 0  # installed
+    else
+        return 1  # not installed
+    fi
+}
+# Check required packages
+echo "Checking required packages..."
+for pkg in "${REQUIRED_PACKAGES[@]}"; do
+    if check_package "$pkg"; then
+        echo "OK $pkg"
+    else
+        echo "✗ $pkg (missing)"
+        MISSING_REQUIRED+=("$pkg")
+    fi
+done
+# Check optional packages
+echo ""
+echo "Checking optional packages..."
+for pkg in "${OPTIONAL_PACKAGES[@]}"; do
+    if check_package "$pkg"; then
+        echo "OK $pkg"
+    else
+        echo "✗ $pkg (missing)"
+        MISSING_OPTIONAL+=("$pkg")
+    fi
+done
+# Check sanity packages
+echo ""
+echo "Chccking Sanity packages..."
+for pkg in "${SANITY_CHECK_PACKAGES[@]}"; do
+    if check_package "$pkg"; then
+        echo "OK: $pkg"
+    else
+        echo "MISSING: $pkg (unexpected!)"
+        MISSING_SANITY+=("$pkg")
+    fi
+done
+# Show results and installation command
+echo ""
+if [ ${#MISSING_REQUIRED[@]} -eq 0 ] && [ ${#MISSING_OPTIONAL[@]} -eq 0 ] && [ ${#MISSING_SANITY[@]} -eq 0 ]; then
+    echo "All dependencies are installed!"
+else
+    ALL_MISSING=("${MISSING_REQUIRED[@]}" "${MISSING_OPTIONAL[@]}" "${MISSING_SANITY[@]}")
+
+    echo "Missing packages found."
+    echo ""
+    echo "To install missing packages, run:"
+    echo "sudo pacman -S ${ALL_MISSING[*]}"
+
+    if [ ${#MISSING_REQUIRED[@]} -gt 0 ]; then
+        echo ""
+        echo "Required packages missing: ${MISSING_REQUIRED[*]}"
+        echo "KADEBOOT will not work without if not running from live ISO"
+    fi
+fi

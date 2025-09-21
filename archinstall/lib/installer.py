@@ -587,7 +587,6 @@ class Installer:
 		with open(f'{self.target}/etc/systemd/network/10-{nic.iface}.network', 'a') as netconf:
 			netconf.write(str(conf))
 
-
 	def mkinitcpio(self, flags: list[str]) -> bool:
 
 		with open(f'{self.target}/etc/mkinitcpio.conf', 'r+') as mkinit:

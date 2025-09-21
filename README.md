@@ -71,7 +71,8 @@ We can also easily allow for self-upgrades by simply running `git pull` for exam
 - Hybrid setup detection (common case of Nvidia-Intel) in `hardware.py` > VM Setups additional packages for QEMU/KVM
 - Swap config inside disks to make possible swap on partition
 - Removed all BOOTLOADERS/HSM/LVM/FIDO2/LUKS2 logic >  Replaced by default: Grub > To be able to expand on snapper/timeshift features + Grub config
-- Stripped a lot of code for defaults to be simpler. And for display (translations, certain menus, etc).
+- Stripped a lot of code for defaults to be simpler. And for display (translations, certain menus, etc) 
+- Removed plugins for maintanability of installer code (scripts still available).
 - Logging inside dir > Auto-save/Load configs also inside dir. Utility `./clean_all` script.
 - Fixed a case where it would pick up on host fstab zram causing boot hangs. `genfstab {flags} -f {self.target} {self.target}` note the `-f` for filter. 
 - Change `f'pacstrap -C /etc/pacman.conf -K {self.target} {" ".join(packages)} --needed --noconfirm'` note the `--needed` flag to prevent re-installs.

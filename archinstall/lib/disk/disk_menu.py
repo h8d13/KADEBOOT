@@ -199,7 +199,7 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 					current_swap_config.swap_type == 'partition' and
 					not any(p.is_swap() for p in mod.partitions)):
 					# Create a properly positioned swap partition for preview
-					swap_partition = self._create_properly_positioned_swap_partition(current_swap_config, mod.partitions)
+					swap_partition = self._create_swap_partition(current_swap_config, mod.partitions)
 					if swap_partition:
 						# Insert swap as second partition (after boot) for preview
 						boot_index = -1
@@ -231,7 +231,6 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 			return output.rstrip()
 
 		return None
-
 
 	def _prev_btrfs_snapshots(self, item: MenuItem) -> str | None:
 		if not item.value:
@@ -482,7 +481,7 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 
 		return None
 
-	def _create_properly_positioned_swap_partition(self, swap_config: 'SwapConfiguration', existing_partitions: list) -> 'PartitionModification | None':
+	def _create_swap_partition(self, swap_config: 'SwapConfiguration', existing_partitions: list) -> 'PartitionModification | None':
 		"""Create a swap partition positioned as partition 2 (after boot partition)"""
 		from ..models.device import PartitionModification, PartitionFlag, FilesystemType, Size, Unit, ModificationStatus, SectorSize, PartitionType
 

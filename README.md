@@ -80,10 +80,12 @@ We can also easily allow for self-upgrades by simply running `git pull` for exam
 
 - Change certain OOO flow: 
     - mount > format filesystem > create new paritions (swap) > set mirrors and base settings > base install > audio > video > KDE plasma > bootloader 
-    - /etc/environment variables > network manager > users > final tz, ntp, services, fstab and DONE. 
+    - /etc/environment variables > network manager > users > final tz, ntp, services, fstab
 
-- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time and having hardware specific bootloader entries without having to think. 
+- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time and having hardware specific bootloader entries without having to think. These are widely *debated* and can result in performance enhancements/or correcting non-functional hardware.
 
+Here is the exact code block in question: [Here](https://github.com/h8d13/KADEBOOT/blob/master/archinstall/lib/installer.py#L963)
+And the reference for why: [Wiki-KernelParameters](https://wiki.archlinux.org/title/Kernel_parameters) and [Wiki-Env](https://wiki.archlinux.org/title/Environment_variables)
 --- 
 
 ## DEVS

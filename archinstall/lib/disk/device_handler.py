@@ -452,9 +452,9 @@ class DeviceHandler:
 		disk.commit()
 
 	@staticmethod
-	def swapon(path: Path, priority: int = 10) -> None:
+	def swapon(path: Path) -> None:
 		try:
-			SysCommand(['swapon', '-p', str(priority), str(path)])
+			SysCommand(['swapon', str(path)])
 		except SysCallError as err:
 			raise DiskError(f'Could not enable swap {path}:\n{err.message}')
 

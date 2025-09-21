@@ -81,7 +81,7 @@ We can also easily allow for self-upgrades by simply running `git pull` for exam
     - mount > format filesystem > create new paritions (swap) > set mirrors and base settings > base install > audio > video > KDE plasma > bootloader 
     - /etc/environment variables > network manager > users > final tz, ntp, services, fstab and DONE. 
 
-- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time. 
+- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time and having hardware specific bootloader entries without having to think. 
 
 --- 
 

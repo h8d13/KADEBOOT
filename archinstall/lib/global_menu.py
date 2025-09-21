@@ -58,12 +58,11 @@ class GlobalMenu(AbstractMenu[None]):
 			'profile_config', # Default profile with graphics driver
 			'app_config',     # Pipewire audio
 			'hostname',      # 'archlinux'
-			'kernels',       # ['linux']
+			'kernels',       # 'linux'
 			'network_config', # NetworkManager
 			'parallel_downloads', # 0
 			'timezone',      # 'UTC'
 			'ntp',          # True
-			'packages',     # []
 		]
 		
 		for key in items_with_defaults:

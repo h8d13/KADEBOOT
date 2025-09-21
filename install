@@ -49,7 +49,8 @@ echo "All dependencies found!"
 export PYTHONPATH="$(pwd):$PYTHONPATH"
 python -B -m archinstall "${ARCHINSTALL_ARGS[@]}" 
 
-#### OPTIONS
+#### OPTIONS from orignal arch install. Heavily simplified to be TUI based guided. 
+
 # All available archinstall command line options:
 #
 # -h, --help            show this help message and exit
@@ -79,7 +80,6 @@ python -B -m archinstall "${ARCHINSTALL_ARGS[@]}"
 #                       search and key-ring auto update
 # --no-pkg-lookups      Disabled package validation specifically prior to
 #                       starting installation
-# --plugin [PLUGIN]     File path to a plugin to load
 # --advanced            Enabled advanced options
 # --verbose             Enabled verbose options
 # --debug               Adds debug info into the log

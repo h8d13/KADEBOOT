@@ -153,6 +153,14 @@ def perform_installation(mountpoint: Path) -> None:
 		if config.swap.swap_type != 'none':
 			installation.setup_swap(config.swap.swap_type, config.swap.size)
 
+		# Install audio drivers before profile to avoid package conflicts
+		if app_config := config.app_config:
+			application_handler.install_applications(installation, app_config)
+
+		# Install profile after audio so graphics driver is set before bootloader
+		if profile_config := config.profile_config:
+			profile_handler.install_profile_config(installation, profile_config)
+
 		if config.bootloader:
 			if config.bootloader == Bootloader.Grub and SysInfo.has_uefi():
 				installation.add_additional_packages('grub')
@@ -173,12 +181,6 @@ def perform_installation(mountpoint: Path) -> None:
 			if config.auth_config.users:
 				installation.create_users(config.auth_config.users)
 				auth_handler.setup_auth(installation, config.auth_config, config.hostname)
-
-		if app_config := config.app_config:
-			application_handler.install_applications(installation, app_config)
-
-		if profile_config := config.profile_config:
-			profile_handler.install_profile_config(installation, profile_config)
 
 		mandatory_package = ['git']
 		installation.add_additional_packages(mandatory_package)

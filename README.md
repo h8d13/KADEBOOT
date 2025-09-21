@@ -77,7 +77,13 @@ We can also easily allow for self-upgrades by simply running `git pull` for exam
 - Change `f'pacstrap -C /etc/pacman.conf -K {self.target} {" ".join(packages)} --needed --noconfirm'` note the `--needed` flag to prevent re-installs.
 - Change `arch-chroot {self.target} mkinitcpio {" ".join(flags)}')` to remove `peek_output=True` causing broken pipe errors. Comestic but important. 
 
----
+- Change certain OOO flow: 
+    - mount > format filesystem > create new paritions (swap) > set mirrors and base settings > base install > audio > video > KDE plasma > bootloader 
+    - /etc/environment variables > network manager > users > final tz, ntp, services, fstab and DONE. 
+
+- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time. 
+
+--- 
 
 ## DEVS
 

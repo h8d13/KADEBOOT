@@ -44,7 +44,6 @@ from .models.users import User
 from .output import debug, error, info, log, logger, warn
 from .pacman import Pacman
 from .pacman.config import PacmanConfig
-from .plugins import plugins
 from .storage import storage
 
 # Any package that the Installer() is responsible for (optional and the default ones)
@@ -434,11 +433,6 @@ class Installer:
 		"""
 		debug('Setting mirrors on ' + ('target' if on_target else 'live system'))
 
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_mirrors'):
-				if result := plugin.on_mirrors(mirror_config):
-					mirror_config = result
-
 		root = self.target if on_target else Path('/')
 		mirrorlist_config = root / 'etc/pacman.d/mirrorlist'
 		pacman_config = root / 'etc/pacman.conf'
@@ -477,11 +471,6 @@ class Installer:
 
 		if not fstab_path.is_file():
 			raise RequirementError('Could not create fstab file')
-
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_genfstab'):
-				if plugin.on_genfstab(self) is True:
-					break
 
 		with open(fstab_path, 'a') as fp:
 			for entry in self._fstab_entries:
@@ -545,11 +534,6 @@ class Installer:
 		if not len(zone):
 			return True  # Redundant
 
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_timezone'):
-				if result := plugin.on_timezone(zone):
-					zone = result
-
 		if (Path('/usr') / 'share' / 'zoneinfo' / zone).exists():
 			(Path(self.target) / 'etc' / 'localtime').unlink(missing_ok=True)
 			SysCommand(f'arch-chroot {self.target} ln -s /usr/share/zoneinfo/{zone} /etc/localtime')
@@ -585,10 +569,6 @@ class Installer:
 			except SysCallError as err:
 				raise ServiceException(f'Unable to start service {service}: {err}')
 
-			for plugin in plugins.values():
-				if hasattr(plugin, 'on_service'):
-					plugin.on_service(service)
-
 	def run_command(self, cmd: str, *args: str, **kwargs: str) -> SysCommand:
 		return SysCommand(f'arch-chroot {self.target} {cmd}')
 
@@ -604,29 +584,11 @@ class Installer:
 	def configure_nic(self, nic: Nic) -> None:
 		conf = nic.as_systemd_config()
 
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_configure_nic'):
-				conf = (
-					plugin.on_configure_nic(
-						nic.iface,
-						nic.dhcp,
-						nic.ip,
-						nic.gateway,
-						nic.dns,
-					)
-					or conf
-				)
-
 		with open(f'{self.target}/etc/systemd/network/10-{nic.iface}.network', 'a') as netconf:
 			netconf.write(str(conf))
 
 
 	def mkinitcpio(self, flags: list[str]) -> bool:
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_mkinitcpio'):
-				# Allow plugins to override the usage of mkinitcpio altogether.
-				if plugin.on_mkinitcpio(self):
-					return True
 
 		with open(f'{self.target}/etc/mkinitcpio.conf', 'r+') as mkinit:
 			content = mkinit.read()
@@ -679,7 +641,6 @@ class Installer:
 		if fs_type.fs_type_mount == 'ntfs3' and mountpoint == self.target:
 			if 'fsck' in self._hooks:
 				self._hooks.remove('fsck')
-
 
 	def minimal_installation(
 		self,
@@ -746,10 +707,6 @@ class Installer:
 		for function in self.post_base_install:
 			info(f'Running post-installation hook: {function}')
 			function(self)
-
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_install'):
-				plugin.on_install(self)
 
 	def setup_btrfs_snapshot(
 		self,
@@ -1026,6 +983,11 @@ class Installer:
 		kernel_parameters = ' '.join(self._get_kernel_params(root, False, False))
 		config = re.sub(r'(GRUB_CMDLINE_LINUX=")("\n)', rf'\1{kernel_parameters}\2', config, count=1)
 
+		# Debug graphics driver state before GRUB configuration
+		debug(f'GRUB configuration - Graphics driver state: {self._gfx_driver}')
+		if self._gfx_driver:
+			debug(f'Graphics driver: {self._gfx_driver.value}, is_nvidia: {self._gfx_driver.is_nvidia()}')
+
 		# Add hardware-specific parameters to GRUB_CMDLINE_LINUX_DEFAULT
 		if self._gfx_driver and self._gfx_driver.is_nvidia():
 			debug('Adding NVIDIA parameters to GRUB_CMDLINE_LINUX_DEFAULT')
@@ -1062,7 +1024,7 @@ class Installer:
 				info(f'Added NVIDIA parameters to GRUB_CMDLINE_LINUX_DEFAULT: {" ".join(hw_params)}')
 			else:
 				# If GRUB_CMDLINE_LINUX_DEFAULT doesn't exist, create it
-				config += f'\n# Hardware-specific parameters\nGRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet {" ".join(hw_params)}"\n'
+				config += f'\n# Hardware-specific parameters\nGRUB_CMDLINE_LINUX_DEFAULT="{" ".join(hw_params)}"\n'
 
 		# Apply GRUB configuration
 		if grub_config:
@@ -1234,13 +1196,6 @@ class Installer:
 		:param grub_config: Optional GRUB configuration settings
 		"""
 
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_add_bootloader'):
-				# Allow plugins to override the boot-loader handling.
-				# This allows for bot configuring and installing bootloaders.
-				if plugin.on_add_bootloader(self):
-					return
-
 		efi_partition = self._get_efi_partition()
 		boot_partition = self._get_boot_partition()
 		root = self._get_root()
@@ -1324,33 +1279,21 @@ class Installer:
 			warn(f'Failed to clone KAES-ARCH for user {target_user.username}: {e}')
 
 	def _create_user(self, user: User) -> None:
-		# This plugin hook allows for the plugin to handle the creation of the user.
 		# Password and Group management is still handled by user_create()
-		handled_by_plugin = False
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_user_create'):
-				if result := plugin.on_user_create(self, user):
-					handled_by_plugin = result
 
-		if not handled_by_plugin:
-			info(f'Creating user {user.username}')
+		info(f'Creating user {user.username}')
 
-			cmd = f'arch-chroot {self.target} useradd -m'
+		cmd = f'arch-chroot {self.target} useradd -m'
 
-			if user.sudo:
-				cmd += ' -G wheel'
+		if user.sudo:
+			cmd += ' -G wheel'
 
-			cmd += f' {user.username}'
+		cmd += f' {user.username}'
 
-			try:
-				SysCommand(cmd)
-			except SysCallError as err:
-				raise SystemError(f'Could not create user inside installation: {err}')
-
-		for plugin in plugins.values():
-			if hasattr(plugin, 'on_user_created'):
-				if result := plugin.on_user_created(self, user):
-					handled_by_plugin = result
+		try:
+			SysCommand(cmd)
+		except SysCallError as err:
+			raise SystemError(f'Could not create user inside installation: {err}')
 
 		self.set_user_password(user)
 

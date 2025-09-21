@@ -7,10 +7,8 @@ from archinstall.lib.general import SysCommand
 from archinstall.lib.models.device import LsblkInfo
 from archinstall.lib.output import debug, warn
 
-
 class LsblkOutput(BaseModel):
 	blockdevices: list[LsblkInfo]
-
 
 def _fetch_lsblk_info(
 	dev_path: Path | str | None = None,
@@ -43,7 +41,6 @@ def _fetch_lsblk_info(
 	output = worker.output(remove_cr=False)
 	return LsblkOutput.model_validate_json(output)
 
-
 def get_lsblk_info(
 	dev_path: Path | str,
 	reverse: bool = False,
@@ -56,14 +53,11 @@ def get_lsblk_info(
 
 	raise DiskError(f'lsblk failed to retrieve information for "{dev_path}"')
 
-
 def get_all_lsblk_info() -> list[LsblkInfo]:
 	return _fetch_lsblk_info().blockdevices
 
-
 def get_lsblk_output() -> LsblkOutput:
 	return _fetch_lsblk_info()
-
 
 def find_lsblk_info(
 	dev_path: Path | str,
@@ -77,7 +71,6 @@ def find_lsblk_info(
 			return lsblk_info
 
 	return None
-
 
 def get_lsblk_by_mountpoint(mountpoint: Path, as_prefix: bool = False) -> list[LsblkInfo]:
 	def _check(infos: list[LsblkInfo]) -> list[LsblkInfo]:
@@ -99,7 +92,6 @@ def get_lsblk_by_mountpoint(mountpoint: Path, as_prefix: bool = False) -> list[L
 	all_info = get_all_lsblk_info()
 	return _check(all_info)
 
-
 def disk_layouts() -> str:
 	try:
 		lsblk_output = get_lsblk_output()
@@ -109,7 +101,6 @@ def disk_layouts() -> str:
 
 	return lsblk_output.model_dump_json(indent=4)
 
-
 def umount(mountpoint: Path, recursive: bool = False) -> None:
 	lsblk_info = get_lsblk_info(mountpoint)
 
@@ -118,11 +109,26 @@ def umount(mountpoint: Path, recursive: bool = False) -> None:
 
 	debug(f'Partition {mountpoint} is currently mounted at: {[str(m) for m in lsblk_info.mountpoints]}')
 
+	# Handle swap partitions - they show as [SWAP] which can't be unmounted with umount
+	if lsblk_info.fstype == 'swap':
+		debug(f'Detected swap partition {mountpoint}, using swapoff instead of umount')
+		try:
+			SysCommand(['swapoff', str(mountpoint)])
+			debug(f'Successfully disabled swap on {mountpoint}')
+		except Exception as e:
+			debug(f'Failed to disable swap on {mountpoint}: {e}')
+		return
+
 	cmd = ['umount']
 
 	if recursive:
 		cmd.append('-R')
 
 	for path in lsblk_info.mountpoints:
+		# Skip invalid mountpoints like [SWAP]
+		if str(path).startswith('[') and str(path).endswith(']'):
+			debug(f'Skipping virtual mountpoint: {path}')
+			continue
+
 		debug(f'Unmounting mountpoint: {path}')
 		SysCommand(cmd + [str(path)])

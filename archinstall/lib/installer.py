@@ -34,7 +34,7 @@ from archinstall.tui.curses_menu import Tui
 from .args import arch_config_handler
 from .exceptions import DiskError, HardwareIncompatibilityError, RequirementError, ServiceException, SysCallError
 from .general import SysCommand, run
-from .hardware import SysInfo
+from .hardware import GfxDriver, SysInfo
 from .locale.utils import verify_keyboard_layout, verify_x11_keyboard_layout
 from .models.bootloader import Bootloader, GrubConfiguration
 from .models.locale import LocaleConfiguration
@@ -79,6 +79,9 @@ class Installer:
 			'base': False,
 			'bootloader': None,
 		}
+
+		# Store graphics driver configuration for kernel parameter detection
+		self._gfx_driver: GfxDriver | None = None
 
 		for kernel in self.kernels:
 			self._base_packages.append(kernel)
@@ -224,6 +227,15 @@ class Installer:
 		# self._verify_boot_part()
 		self._verify_service_stop()
 
+	def set_graphics_driver(self, gfx_driver: GfxDriver) -> None:
+		"""
+		Set the graphics driver for hardware-specific kernel parameters.
+		This should be called when installing the graphics driver.
+		Parameters will be added to GRUB_CMDLINE_LINUX_DEFAULT during bootloader installation.
+		"""
+		self._gfx_driver = gfx_driver
+		debug(f'Graphics driver set to {gfx_driver.value} for kernel parameter configuration')
+
 	def mount_ordered_layout(self) -> None:
 		debug('Mounting ordered layout')
 
@@ -256,10 +268,6 @@ class Installer:
 			for part_mod in sorted_part_mods:
 				self._mount_partition(part_mod)
 
-
-
-
-
 	def _mount_partition(self, part_mod: PartitionModification) -> None:
 		if not part_mod.dev_path:
 			return
@@ -287,13 +295,6 @@ class Installer:
 			mountpoint = self.target / subvol.relative_mountpoint
 			options = mount_options + [f'subvol={subvol.name}']
 			device_handler.mount(dev_path, mountpoint, options=options)
-
-	def generate_key_files(self) -> None:
-		# No key files needed for NoEncryption
-		pass
-
-
-
 
 	def add_swapfile(self, size: str = '4G', enable_resume: bool = True, file: str = '/swapfile') -> None:
 		if file[:1] != '/':
@@ -529,55 +530,6 @@ class Installer:
 		with open(f'{self.target}/etc/systemd/network/10-{nic.iface}.network', 'a') as netconf:
 			netconf.write(str(conf))
 
-	def copy_iso_network_config(self, enable_services: bool = False) -> bool:
-		# Copy (if any) iwd password and config files
-		if os.path.isdir('/var/lib/iwd/'):
-			if psk_files := glob.glob('/var/lib/iwd/*.psk'):
-				if not os.path.isdir(f'{self.target}/var/lib/iwd'):
-					os.makedirs(f'{self.target}/var/lib/iwd')
-
-				if enable_services:
-					# If we haven't installed the base yet (function called pre-maturely)
-					if self._helper_flags.get('base', False) is False:
-						self._base_packages.append('iwd')
-
-						# This function will be called after minimal_installation()
-						# as a hook for post-installs. This hook is only needed if
-						# base is not installed yet.
-						def post_install_enable_iwd_service(*args: str, **kwargs: str) -> None:
-							self.enable_service('iwd')
-
-						self.post_base_install.append(post_install_enable_iwd_service)
-					# Otherwise, we can go ahead and add the required package
-					# and enable it's service:
-					else:
-						self.pacman.strap('iwd')
-						self.enable_service('iwd')
-
-				for psk in psk_files:
-					shutil.copy2(psk, f'{self.target}/var/lib/iwd/{os.path.basename(psk)}')
-
-		# Copy (if any) systemd-networkd config files
-		if netconfigurations := glob.glob('/etc/systemd/network/*'):
-			if not os.path.isdir(f'{self.target}/etc/systemd/network/'):
-				os.makedirs(f'{self.target}/etc/systemd/network/')
-
-			for netconf_file in netconfigurations:
-				shutil.copy2(netconf_file, f'{self.target}/etc/systemd/network/{os.path.basename(netconf_file)}')
-
-			if enable_services:
-				# If we haven't installed the base yet (function called pre-maturely)
-				if self._helper_flags.get('base', False) is False:
-
-					def post_install_enable_networkd_resolved(*args: str, **kwargs: str) -> None:
-						self.enable_service(['systemd-networkd', 'systemd-resolved'])
-
-					self.post_base_install.append(post_install_enable_networkd_resolved)
-				# Otherwise, we can go ahead and enable the services
-				else:
-					self.enable_service(['systemd-networkd', 'systemd-resolved'])
-
-		return True
 
 	def mkinitcpio(self, flags: list[str]) -> bool:
 		for plugin in plugins.values():
@@ -769,7 +721,10 @@ class Installer:
 			kind = str(kind)
 		kind = kind.lower().strip()
 
-		if kind == 'zram' or kind == '':
+		# Default to zram for empty string or unrecognized values
+		if kind == 'zram' or kind == '' or kind not in ['swapfile', 'partition', 'none']:
+			if kind not in ['zram', '']:
+				info('Unrecognized swap type, defaulting to zram')
 			info('Setting up swap on zram')
 			self.pacman.strap('zram-generator')
 
@@ -780,8 +735,8 @@ class Installer:
 				zram_conf.write('[zram0]\n')
 
 			self.enable_service('systemd-zram-setup@zram0.service')
-
 			self._zram_enabled = True
+
 		elif kind == 'swapfile':
 			info(f'Setting up swapfile ({size})')
 			swapfile_path = f'{self.target}/swapfile'
@@ -793,9 +748,10 @@ class Installer:
 
 			# Add swapfile to fstab
 			self._fstab_entries.append('/swapfile none swap defaults 0 0')
+
 		elif kind == 'partition':
 			info('Configuring swap partitions for fstab')
-			# Swap partitions are already activated during partition mounting (line 279-280)
+			# Swap partitions are already activated during partition mounting
 			# but they need to be added to fstab for automatic mounting on boot
 			swap_partitions = []
 			for layout in self._disk_config.device_modifications:
@@ -812,18 +768,11 @@ class Installer:
 			else:
 				warn('No swap partitions found in disk configuration.')
 				info('Make sure to create a swap partition in the disk layout, or use "zram" or "swapfile" options instead.')
+
 		elif kind == 'none':
 			info('No swap configured')
 			# Explicitly disable any swap setup
 			pass
-		else:
-			# Default to zram for any unrecognized values
-			info('Defaulting to swap on zram')
-			self.pacman.strap('zram-generator')
-			with open(f'{self.target}/etc/systemd/zram-generator.conf', 'w') as zram_conf:
-				zram_conf.write('[zram0]\n')
-			self.enable_service('systemd-zram-setup@zram0.service')
-			self._zram_enabled = True
 
 	def _get_efi_partition(self) -> PartitionModification | None:
 		for layout in self._disk_config.device_modifications:
@@ -986,6 +935,34 @@ class Installer:
 
 		kernel_parameters = ' '.join(self._get_kernel_params(root, False, False))
 		config = re.sub(r'(GRUB_CMDLINE_LINUX=")("\n)', rf'\1{kernel_parameters}\2', config, count=1)
+
+		# Add hardware-specific parameters to GRUB_CMDLINE_LINUX_DEFAULT
+		if self._gfx_driver and self._gfx_driver.is_nvidia():
+			debug('Adding NVIDIA parameters to GRUB_CMDLINE_LINUX_DEFAULT')
+
+			# Build the hardware-specific parameters string
+			hw_params = []
+
+			# Essential for modern NVIDIA setup
+			hw_params.append('nvidia-drm.modeset=1')
+
+			if self._gfx_driver == GfxDriver.NvidiaProprietary:
+				hw_params.append('nvidia-drm.fbdev=1')
+				hw_params.append('nvidia.NVreg_PreserveVideoMemoryAllocations=1')
+
+			# Find and update GRUB_CMDLINE_LINUX_DEFAULT
+			if 'GRUB_CMDLINE_LINUX_DEFAULT=' in config:
+				# Extract existing parameters and append new ones
+				config = re.sub(
+					r'(GRUB_CMDLINE_LINUX_DEFAULT=")(.*?)(")',
+					lambda m: f'{m.group(1)}{m.group(2)} {" ".join(hw_params)}{m.group(3)}',
+					config,
+					count=1
+				)
+				info(f'Added NVIDIA parameters to GRUB_CMDLINE_LINUX_DEFAULT: {" ".join(hw_params)}')
+			else:
+				# If GRUB_CMDLINE_LINUX_DEFAULT doesn't exist, create it
+				config += f'\n# Hardware-specific parameters\nGRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet {" ".join(hw_params)}"\n'
 
 		# Apply GRUB configuration
 		if grub_config:

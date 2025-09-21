@@ -193,6 +193,9 @@ class ProfileHandler:
 	def install_gfx_driver(self, install_session: 'Installer', driver: GfxDriver) -> None:
 		debug(f'Installing GFX driver: {driver.value}')
 
+		# Set the graphics driver in the installer to configure kernel parameters
+		install_session.set_graphics_driver(driver)
+
 		if driver in [GfxDriver.NvidiaOpenKernel, GfxDriver.NvidiaProprietary, GfxDriver.IntelNvidiaHybrid]:
 			headers = [f'{kernel}-headers' for kernel in install_session.kernels]
 			# Fixes https://github.com/archlinux/archinstall/issues/585

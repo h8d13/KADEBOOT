@@ -304,10 +304,7 @@ class GlobalMenu(AbstractMenu[None]):
 	def _prev_network_config(self, item: MenuItem) -> str | None:
 		if item.value:
 			network_config: NetworkConfiguration = item.value
-			if network_config.type == NicType.MANUAL:
-				output = FormattedOutput.as_table(network_config.nics)
-			else:
-				output = f'Network configuration:\n{network_config.type.display_msg()}'
+			output = f'Network configuration:\n{network_config.type.display_msg()}'
 
 			return output
 		return None

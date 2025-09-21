@@ -201,7 +201,19 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 					# Create a properly positioned swap partition for preview
 					swap_partition = self._create_properly_positioned_swap_partition(current_swap_config, mod.partitions)
 					if swap_partition:
-						partitions_to_show.append(swap_partition)
+						# Insert swap as second partition (after boot) for preview
+						boot_index = -1
+						for i, part in enumerate(partitions_to_show):
+							if part.is_boot() or part.is_efi():
+								boot_index = i
+								break
+
+						if boot_index >= 0:
+							# Insert after boot partition
+							partitions_to_show.insert(boot_index + 1, swap_partition)
+						else:
+							# No boot partition, add at end
+							partitions_to_show.append(swap_partition)
 
 				# create partition table
 				partition_table = FormattedOutput.as_table(partitions_to_show)
@@ -380,21 +392,61 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 			else:
 				info(f'Disk will be wiped - skipping space validation')
 
-			# Create swap partition using the space freed from shrinking last partition
-			start_position = Size(last_end_sectors, Unit.sectors, sector_size)
-			swap_partition = PartitionModification(
-				status=ModificationStatus.Create,
-				type=PartitionType.Primary,
-				start=start_position,
-				length=Size(value, unit, SectorSize.default()),
-				fs_type=FilesystemType.LinuxSwap,
-				mountpoint=None,
-				flags=[PartitionFlag.SWAP],
-			)
+			# Create swap partition - we want it as partition 2 (after boot)
+			# Find the boot partition (should be first)
+			boot_partition = None
+			boot_index = -1
+			for i, part in enumerate(device_mod.partitions):
+				if part.is_boot() or part.is_efi():
+					boot_partition = part
+					boot_index = i
+					break
 
-			# Add to device modifications
-			device_mod.partitions.append(swap_partition)
-			info(f'Added swap partition to disk configuration: {size_str} swap partition at sector {start_position.value}')
+			if boot_partition:
+				# Calculate swap position after boot partition
+				boot_end = boot_partition.start + boot_partition.length
+				swap_start = boot_end  # Start right after boot partition
+
+				# Create swap partition
+				swap_partition = PartitionModification(
+					status=ModificationStatus.Create,
+					type=PartitionType.Primary,
+					start=swap_start,
+					length=Size(value, unit, SectorSize.default()),
+					fs_type=FilesystemType.LinuxSwap,
+					mountpoint=None,
+					flags=[PartitionFlag.SWAP],
+				)
+
+				# Adjust subsequent partitions to start after swap
+				swap_end = swap_start + swap_partition.length
+				for i in range(boot_index + 1, len(device_mod.partitions)):
+					part = device_mod.partitions[i]
+					if part.status == ModificationStatus.Create:
+						# Move this partition to start after swap
+						old_start = part.start
+						part.start = swap_end
+						swap_end = part.start + part.length
+						info(f'Moved partition {i} from {old_start.value} to {part.start.value} sectors')
+
+				# Insert swap as second partition (after boot)
+				device_mod.partitions.insert(boot_index + 1, swap_partition)
+				info(f'Added {size_str} swap partition as partition 2 after boot partition')
+			else:
+				# No boot partition found, fallback to adding at end
+				start_position = Size(last_end_sectors, Unit.sectors, sector_size)
+				swap_partition = PartitionModification(
+					status=ModificationStatus.Create,
+					type=PartitionType.Primary,
+					start=start_position,
+					length=Size(value, unit, SectorSize.default()),
+					fs_type=FilesystemType.LinuxSwap,
+					mountpoint=None,
+					flags=[PartitionFlag.SWAP],
+				)
+				device_mod.partitions.append(swap_partition)
+				info(f'No boot partition found, added swap at end: {size_str} swap partition at sector {start_position.value}')
+
 			break
 
 	def _auto_create_swap_partition(self, swap_config: 'SwapConfiguration') -> None:
@@ -431,7 +483,7 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 		return None
 
 	def _create_properly_positioned_swap_partition(self, swap_config: 'SwapConfiguration', existing_partitions: list) -> 'PartitionModification | None':
-		"""Create a swap partition with correct position calculated from existing partitions"""
+		"""Create a swap partition positioned as partition 2 (after boot partition)"""
 		from ..models.device import PartitionModification, PartitionFlag, FilesystemType, Size, Unit, ModificationStatus, SectorSize, PartitionType
 
 		if not swap_config:
@@ -453,56 +505,38 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 		except:
 			value, unit = 4, Unit.GiB
 
-		# Calculate proper start position after existing partitions (same logic as real creation)
-		if existing_partitions:
-			# Find the end of the last partition by converting everything to sectors first
-			last_end_sectors = 0
-			sector_size = SectorSize.default()
+		sector_size = SectorSize.default()
 
-			for partition in existing_partitions:
-				if partition.start:
-					# Convert both start and length to sectors for accurate calculation
-					start_sectors = partition.start.convert(Unit.sectors, sector_size).value
-					length_sectors = partition.length.convert(Unit.sectors, sector_size).value
-					partition_end_sectors = start_sectors + length_sectors
+		# Find the boot partition (should be first)
+		boot_partition = None
+		for partition in existing_partitions:
+			if partition.is_boot() or partition.is_efi():
+				boot_partition = partition
+				break
 
-					if partition_end_sectors > last_end_sectors:
-						last_end_sectors = partition_end_sectors
-
-			# Calculate swap partition size in sectors for boundary checking
-			swap_size_sectors = Size(value, unit, sector_size).convert(Unit.sectors, sector_size).value
-
-			# Get disk size in sectors (approximate for preview)
-			# For preview, we'll use a reasonable estimate
-			device_size_sectors = 2000000000000 // sector_size.value  # ~1TB in sectors
-			if self._disk_menu_config.disk_config and self._disk_menu_config.disk_config.device_modifications:
-				# Try to get actual device size if available
-				device_mod = self._disk_menu_config.disk_config.device_modifications[0]
-				if hasattr(device_mod.device.device_info, 'total_size'):
-					device_size_sectors = device_mod.device.device_info.total_size
-					if hasattr(device_size_sectors, 'convert'):
-						device_size_sectors = device_size_sectors.convert(Unit.sectors, sector_size).value
-					else:
-						device_size_sectors = device_size_sectors // sector_size.value
-
-			# Add padding and check if swap partition fits
-			padding_sectors = Size(1, Unit.MiB, sector_size).convert(Unit.sectors, sector_size).value
-			proposed_start = last_end_sectors + padding_sectors
-			proposed_end = proposed_start + swap_size_sectors
-
-			if proposed_end > device_size_sectors:
-				# Try to fit swap at the end of disk with minimal padding
-				available_sectors = device_size_sectors - last_end_sectors - 2048  # 1MB safety margin
-				if available_sectors >= swap_size_sectors:
-					start_position = Size(device_size_sectors - swap_size_sectors - 1024, Unit.sectors, sector_size)
-				else:
-					# Fallback to minimal position if can't fit properly
-					start_position = Size(last_end_sectors + 2048, Unit.sectors, sector_size)
-			else:
-				start_position = Size(proposed_start, Unit.sectors, sector_size)
+		if boot_partition:
+			# Position swap right after boot partition
+			boot_end = boot_partition.start + boot_partition.length
+			start_position = boot_end  # Start right after boot partition
 		else:
-			# No existing partitions, start at 1MB
-			start_position = Size(1, Unit.MiB, SectorSize.default())
+			# No boot partition found, fallback to calculating position after all existing partitions
+			if existing_partitions:
+				# Find the end of the last partition
+				last_end_sectors = 0
+				for partition in existing_partitions:
+					if partition.start:
+						start_sectors = partition.start.convert(Unit.sectors, sector_size).value
+						length_sectors = partition.length.convert(Unit.sectors, sector_size).value
+						partition_end_sectors = start_sectors + length_sectors
+						if partition_end_sectors > last_end_sectors:
+							last_end_sectors = partition_end_sectors
+
+				# Add padding
+				padding_sectors = Size(1, Unit.MiB, sector_size).convert(Unit.sectors, sector_size).value
+				start_position = Size(last_end_sectors + padding_sectors, Unit.sectors, sector_size)
+			else:
+				# No existing partitions, start at 1MB
+				start_position = Size(1, Unit.MiB, SectorSize.default())
 
 		return PartitionModification(
 			status=ModificationStatus.Create,

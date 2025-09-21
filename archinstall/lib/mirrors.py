@@ -235,18 +235,18 @@ class MirrorMenu(AbstractSubMenu[MirrorConfiguration]):
 				key='mirror_regions',
 			),
 			MenuItem(
-				text=('Add custom servers'),
-				action=add_custom_mirror_servers,
-				value=self._mirror_config.custom_servers,
-				preview_action=self._prev_custom_servers,
-				key='custom_servers',
-			),
-			MenuItem(
 				text=('Optional repositories'),
 				action=select_optional_repositories,
 				value=[],
 				preview_action=self._prev_additional_repos,
 				key='optional_repositories',
+			),
+			MenuItem(
+				text=('Add custom servers'),
+				action=add_custom_mirror_servers,
+				value=self._mirror_config.custom_servers,
+				preview_action=self._prev_custom_servers,
+				key='custom_servers',
 			),
 			MenuItem(
 				text=('Add custom repository'),
@@ -275,7 +275,7 @@ class MirrorMenu(AbstractSubMenu[MirrorConfiguration]):
 		if item.value:
 			repositories: list[Repository] = item.value
 			repos = ', '.join([repo.value for repo in repositories])
-			return f'("Additional repositories"): {repos}'
+			return f'Additional repositories: {repos}'
 		return None
 
 	def _prev_custom_mirror(self, item: MenuItem) -> str | None:

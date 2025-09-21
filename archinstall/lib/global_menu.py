@@ -100,7 +100,7 @@ class GlobalMenu(AbstractMenu[None]):
 				key='locale_config',
 			),
 			MenuItem(
-				text=('Mirrors and repositories'),
+				text=('Mirrors and repos'),
 				action=self._mirror_configuration,
 				preview_action=self._prev_mirror_config,
 				mandatory=True,

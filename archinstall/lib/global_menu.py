@@ -366,11 +366,18 @@ class GlobalMenu(AbstractMenu[None]):
 		if disk_layout_conf:
 			output = ('Configuration type: {}').format(disk_layout_conf.config_type.display_msg()) + '\n'
 
-			if disk_layout_conf.config_type == DiskLayoutType.Pre_mount:
-				output += ('Mountpoint') + ': ' + str(disk_layout_conf.mountpoint)
-
-			if disk_layout_conf.disk_encryption:
-				output += ('Disk encryption') + ': ' + EncryptionType.type_to_text(disk_layout_conf.disk_encryption.encryption_type) + '\n'
+			# Display swap configuration
+			swap_config = getattr(self._config, 'swap', None)
+			if swap_config:
+				if isinstance(swap_config, SwapConfiguration):
+					if swap_config.swap_type == 'none':
+						output += ('Swap: Disabled') + '\n'
+					elif swap_config.swap_type == 'zram':
+						output += ('Swap: ZRAM ({})\n').format(swap_config.size)
+					elif swap_config.swap_type == 'swapfile':
+						output += ('Swap: Swapfile ({})\n').format(swap_config.size)
+					else:
+						output += ('Swap: {}').format(swap_config.swap_type) + '\n'
 
 			if disk_layout_conf.btrfs_options:
 				btrfs_options = disk_layout_conf.btrfs_options
@@ -380,7 +387,6 @@ class GlobalMenu(AbstractMenu[None]):
 			return output
 
 		return None
-
 
 	def _prev_hostname(self, item: MenuItem) -> str | None:
 		if item.value is not None:
@@ -486,7 +492,10 @@ class GlobalMenu(AbstractMenu[None]):
 				output += profile_config.profile.name + '\n'
 
 			if profile_config.gfx_driver:
-				output += ('Graphics driver') + ': ' + profile_config.gfx_driver.value + '\n'
+				output += ('Graphics drivers') + ': ' + profile_config.gfx_driver.value + '\n'
+
+			if profile_config.plasma_x11_session:
+				output += ('Graphics servers') + ': Yes (plasma-x11-session)\n'
 
 			if profile_config.greeter:
 				output += ('Greeter') + ': ' + profile_config.greeter.value + '\n'

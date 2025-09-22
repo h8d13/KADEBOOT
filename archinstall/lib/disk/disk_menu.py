@@ -255,9 +255,9 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 		# Use the existing swap configuration UI
 		swap_type = ask_for_swap(preset.swap_type)
 
-		# Ask for size if swapfile or partition is selected
+		# Ask for size for all swap types except 'none'
 		size = preset.size
-		if swap_type in ['swapfile', 'partition']:
+		if swap_type != 'none':
 			size = ask_for_swap_size(preset.size)
 
 		# Create new SwapConfiguration with the selected type and size

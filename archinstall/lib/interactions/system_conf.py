@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from archinstall.tui.curses_menu import SelectMenu
+from archinstall.tui.curses_menu import SelectMenu, EditMenu
 from archinstall.tui.menu_item import MenuItem, MenuItemGroup
 from archinstall.tui.result import ResultType
 from archinstall.tui.types import Alignment, FrameProperties, FrameStyle, Orientation, PreviewStyle
@@ -527,15 +527,30 @@ def ask_for_swap(preset: str = 'zram') -> str:
 
 def ask_for_swap_size(preset: str = '4G') -> str:
 	"""Ask user for swap size in GiB"""
-	from archinstall.tui.curses_menu import EditMenu
-	from archinstall.tui.result import ResultType
-	from archinstall.tui.types import Alignment
+	# Get total RAM and calculate recommendations
+	total_ram_kb = SysInfo.mem_total()
+	total_ram_gb = total_ram_kb / (1024 * 1024)
 
-	prompt = 'Enter swap size (e.g., 2G, 4G, 8G):'
+	# Generate swap size recommendations based on RAM
+	if total_ram_gb <= 2:
+		recommended = "4G"
+	elif total_ram_gb <= 4:
+		recommended = "4G"
+	elif total_ram_gb <= 8:
+		recommended = "4G"
+	elif total_ram_gb <= 16:
+		recommended = "8G"
+	else:
+		recommended = "8G"
+
+	if preset == '4G' and recommended != '4G':
+		preset = recommended
+
+	prompt = f'Enter desired swap size:'
 
 	result = EditMenu(
 		prompt,
-		header='Swap Size Configuration',
+		header=f'Configuration (detected RAM: {total_ram_gb:.1f}GB, recommended: {recommended})',
 		alignment=Alignment.CENTER,
 		allow_skip=True,
 		validator=_validate_swap_size,
@@ -552,7 +567,6 @@ def ask_for_swap_size(preset: str = '4G') -> str:
 				return preset
 
 	return preset
-
 
 def _validate_swap_size(size_str: str) -> str | None:
 	"""Validate swap size format"""

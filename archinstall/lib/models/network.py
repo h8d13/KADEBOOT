@@ -9,7 +9,6 @@ from ..models.profile import ProfileConfiguration
 if TYPE_CHECKING:
 	from archinstall.lib.installer import Installer
 
-
 class NicType(Enum):
 	ISO = 'iso'
 	NM = 'nm'
@@ -26,7 +25,6 @@ class _NicSerialization(TypedDict):
 	dhcp: bool
 	gateway: str | None
 	dns: list[str]
-
 
 @dataclass
 class Nic:
@@ -91,11 +89,9 @@ class Nic:
 
 		return config_str
 
-
 class _NetworkConfigurationSerialization(TypedDict):
 	type: str
 	nics: NotRequired[list[_NicSerialization]]
-
 
 @dataclass
 class NetworkConfiguration:
@@ -128,7 +124,8 @@ class NetworkConfiguration:
 	) -> None:
 		match self.type:
 			case NicType.NM:
-				installation.add_additional_packages(['networkmanager'])
+				#installation.add_additional_packages(['networkmanager'])
+				## already in plasma-meta
 				if profile_config and profile_config.profile:
 					if profile_config.profile.is_desktop_profile():
 						installation.add_additional_packages(['network-manager-applet'])

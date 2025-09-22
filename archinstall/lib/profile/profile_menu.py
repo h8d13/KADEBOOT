@@ -59,7 +59,7 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 				key='profile',
 			),
 			MenuItem(
-				text=('Graphics driver'),
+				text=('Graphics drivers'),
 				action=self._select_gfx_driver,
 				value=self._profile_config.gfx_driver if self._profile_config.profile and self._profile_config.profile.is_graphic_driver_supported() else None,
 				preview_action=self._prev_gfx,

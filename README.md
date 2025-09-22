@@ -77,12 +77,12 @@ We can also easily allow for self-upgrades by simply running `git pull` for exam
 - Fixed a case where it would pick up on host fstab zram causing boot hangs. `genfstab {flags} -f {self.target} {self.target}` note the `-f` for filter. 
 - Change `f'pacstrap -C /etc/pacman.conf -K {self.target} {" ".join(packages)} --needed --noconfirm'` note the `--needed` flag to prevent re-installs.
 - Change `arch-chroot {self.target} mkinitcpio {" ".join(flags)}')` to remove `peek_output=True` causing broken pipe errors. Comestic but important. 
-
+- Added legacy swap types + Legacy x11 option
 - Change certain OOO flow: 
     - mount > format filesystem > create new paritions (swap) > set mirrors and base settings > base install > audio > video > KDE plasma > bootloader 
     - /etc/environment variables > network manager > users > final tz, ntp, services, fstab
 
-- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time and having hardware specific bootloader entries without having to think. These are widely *debated* and can result in performance enhancements/or correcting non-functional hardware.
+- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time and having hardware specific bootloader entries (and env vars) without having to think. These are widely *debated* and can result in performance enhancements/or correcting non-functional hardware.
 
 Here is the exact code block in question: [Here](https://github.com/h8d13/KADEBOOT/blob/master/archinstall/lib/installer.py#L963) This could be expanded upon to build hardware-aware and optimized presets considering hardware detection modules. 
 

@@ -57,6 +57,7 @@ After running the script it will restart one last time. **And you are done!**
 
 For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
+<img width="736" height="456" alt="image" src="https://github.com/user-attachments/assets/ae511cc6-ff58-4026-8689-f7e3ff662501" />
 
 ## KADEBOOT under the hood
 

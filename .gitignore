@@ -1,3 +1,5 @@
 logs/*
 user_*.json
-*/__pycache__/*
+
+__pycache__/*
+*.pyc

@@ -24,6 +24,5 @@ def clean_cache(root_dir):
     else:
         print(f"\n✅ Done. {len(deleted)} cache folder(s) deleted.")
 
-# Replace '.' with the path you want to clean
 if __name__ == "__main__":
     clean_cache(".")

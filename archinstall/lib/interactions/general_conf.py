@@ -11,14 +11,11 @@ from archinstall.tui.types import Alignment, FrameProperties, Orientation
 
 from ..locale.utils import list_timezones
 from ..output import warn
-from ..translationhandler import Language
-
 
 class PostInstallationAction(Enum):
 	EXIT = ('Exit archinstall')
 	REBOOT = ('Reboot system')
 	CHROOT = ('Chroot into installation for post-installation configurations')
-
 
 def ask_ntp(preset: bool = True) -> bool:
 	header = ('Would you like to use automatic time synchronization (NTP) with the default time servers?\n') + '\n'
@@ -48,7 +45,6 @@ def ask_ntp(preset: bool = True) -> bool:
 		case _:
 			raise ValueError('Unhandled return type')
 
-
 def ask_hostname(preset: str | None = None) -> str | None:
 	result = EditMenu(
 		('Hostname'),
@@ -67,7 +63,6 @@ def ask_hostname(preset: str | None = None) -> str | None:
 			return hostname
 		case ResultType.Reset:
 			raise ValueError('Unhandled result type')
-
 
 def ask_for_a_timezone(preset: str | None = None) -> str | None:
 	default = 'UTC'
@@ -94,7 +89,6 @@ def ask_for_a_timezone(preset: str | None = None) -> str | None:
 		case ResultType.Selection:
 			return result.get_value()
 
-
 def select_language(preset: str | None = None) -> str | None:
 	from ..locale.locale_menu import select_kb_layout
 
@@ -106,37 +100,6 @@ def select_language(preset: str | None = None) -> str | None:
 	warn('select_language() is deprecated, use select_kb_layout() instead. select_language() will be removed in a future version')
 
 	return select_kb_layout(preset)
-
-
-def select_archinstall_language(languages: list[Language], preset: Language) -> Language:
-	# these are the displayed language names which can either be
-	# the english name of a language or, if present, the
-	# name of the language in its own language
-
-	items = [MenuItem(lang.display_name, lang) for lang in languages]
-	group = MenuItemGroup(items, sort_items=True)
-	group.set_focus_by_value(preset)
-
-	title = 'NOTE: If a language can not displayed properly, a proper font must be set manually in the console.\n'
-	title += 'All available fonts can be found in "/usr/share/kbd/consolefonts"\n'
-	title += 'e.g. setfont LatGrkCyr-8x16 (to display latin/greek/cyrillic characters)\n'
-
-	result = SelectMenu[Language](
-		group,
-		header=title,
-		allow_skip=True,
-		allow_reset=False,
-		alignment=Alignment.CENTER,
-		frame=FrameProperties.min(header=tr('Select language')),
-	).run()
-
-	match result.type_:
-		case ResultType.Skip:
-			return preset
-		case ResultType.Selection:
-			return result.get_value()
-		case ResultType.Reset:
-			raise ValueError('Language selection not handled')
 
 def add_number_of_parallel_downloads(preset: int | None = None) -> int | None:
 	max_recommended = 5
@@ -189,7 +152,6 @@ def add_number_of_parallel_downloads(preset: int | None = None) -> int | None:
 
 	return downloads
 
-
 def ask_post_installation() -> PostInstallationAction:
 	header = ('Installation completed') + '\n\n'
 	header += ('What would you like to do next?') + '\n'
@@ -209,7 +171,6 @@ def ask_post_installation() -> PostInstallationAction:
 			return result.get_value()
 		case _:
 			raise ValueError('Post installation action not handled')
-
 
 def ask_abort() -> None:
 	prompt = ('Do you really want to abort?') + '\n'

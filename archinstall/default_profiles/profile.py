@@ -6,23 +6,19 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
 	from ..lib.installer import Installer
 
-
 class ProfileType(Enum):
 	# Only Desktop/KDE Plasma support
 	Desktop = 'Desktop'
 	DesktopEnv = 'Desktop Environment'
 
-
 class GreeterType(Enum):
 	# Only SDDM for KDE Plasma
 	Sddm = 'sddm'
-
 
 class SelectResult(Enum):
 	NewSelection = auto()
 	SameSelection = auto()
 	ResetCurrent = auto()
-
 
 class Profile:
 	def __init__(

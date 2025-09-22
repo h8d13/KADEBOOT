@@ -25,7 +25,6 @@ from archinstall.lib.models.profile import ProfileConfiguration
 from archinstall.lib.models.users import Password, User, UserSerialization
 from archinstall.lib.output import debug, error, logger, warn
 from archinstall.lib.plugins import load_plugin
-from archinstall.lib.translationhandler import Language, tr, translation_handler
 from archinstall.lib.utils.util import get_password
 from archinstall.tui.curses_menu import Tui
 
@@ -64,7 +63,6 @@ class ArchConfig:
 	version: str | None = None
 	script: str | None = None
 	locale_config: LocaleConfiguration | None = None
-	archinstall_language: Language = field(default_factory=lambda: translation_handler.get_language_by_abbr('en'))
 	disk_config: DiskLayoutConfiguration | None = None
 	profile_config: ProfileConfiguration | None = None
 	mirror_config: MirrorConfiguration | None = None
@@ -104,7 +102,6 @@ class ArchConfig:
 		config: Any = {
 			'version': self.version,
 			'script': self.script,
-			'archinstall-language': self.archinstall_language.json(),
 			'hostname': self.hostname,
 			'kernels': self.kernels,
 			'ntp': self.ntp,
@@ -145,9 +142,6 @@ class ArchConfig:
 
 		if script := args_config.get('script', None):
 			arch_config.script = script
-
-		if archinstall_lang := args_config.get('archinstall-language', None):
-			arch_config.archinstall_language = translation_handler.get_language_by_name(archinstall_lang)
 
 		if disk_config := args_config.get('disk_config', {}):
 			enc_password = args_config.get('encryption_password', '')

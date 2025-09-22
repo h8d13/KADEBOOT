@@ -32,7 +32,6 @@ from .models.packages import Repository
 from .models.profile import ProfileConfiguration
 from .output import FormattedOutput
 from .pacman.config import PacmanConfig
-from .translationhandler import Language, tr, translation_handler
 
 
 class GlobalMenu(AbstractMenu[None]):
@@ -135,13 +134,6 @@ class GlobalMenu(AbstractMenu[None]):
 				key='kernels',
 			),
 			MenuItem(
-				text=('Hostname'),
-				value='archlinux',
-				action=ask_hostname,
-				preview_action=self._prev_hostname,
-				key='hostname',
-			),
-			MenuItem(
 				text=('Profile'),
 				action=self._select_profile,
 				preview_action=self._prev_profile,
@@ -155,6 +147,13 @@ class GlobalMenu(AbstractMenu[None]):
 				value=None,
 				preview_action=self._prev_applications,
 				key='app_config',
+			),
+			MenuItem(
+				text=('Hostname'),
+				value='archlinux',
+				action=ask_hostname,
+				preview_action=self._prev_hostname,
+				key='hostname',
 			),
 			MenuItem(
 				text=('Network configuration'),

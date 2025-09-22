@@ -7,8 +7,6 @@ from .exceptions import SysCallError
 from .general import SysCommand
 from .networking import enrich_iface_types, list_interfaces
 from .output import debug
-from .translationhandler import tr
-
 
 class CpuVendor(Enum):
 	AuthenticAMD = 'amd'

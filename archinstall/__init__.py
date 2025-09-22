@@ -14,7 +14,6 @@ from .lib.hardware import SysInfo
 from .lib.output import FormattedOutput, debug, error, info, log, warn
 from .lib.pacman import Pacman
 from .lib.plugins import load_plugin, plugins
-from .lib.translationhandler import Language, tr, translation_handler
 from .tui.curses_menu import Tui
 
 

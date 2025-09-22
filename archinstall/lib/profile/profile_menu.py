@@ -13,7 +13,6 @@ from ..interactions.system_conf import select_driver
 from ..menu.abstract_menu import AbstractSubMenu
 from ..models.profile import ProfileConfiguration
 
-
 class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 	def __init__(
 		self,
@@ -67,6 +66,14 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 				enabled=self._profile_config.profile.is_graphic_driver_supported() if self._profile_config.profile else False,
 				dependencies=['profile'],
 				key='gfx_driver',
+			),
+			MenuItem(
+				text=('Graphics servers'),
+				action=self._select_plasma_x11,
+				value=getattr(self._profile_config, 'plasma_x11_session', False),
+				preview_action=lambda item: 'Yes' if item.value else 'No',
+				enabled=True,
+				key='plasma_x11_session',
 			),
 			MenuItem(
 				text=('Greeter'),
@@ -149,6 +156,7 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 				# Only set default greeter if user hasn't already chosen one
 				if greeter_item.value is None:
 					greeter_item.value = profile.default_greeter_type
+
 		else:
 			self._item_group.find_by_key('gfx_driver').value = None
 			self._item_group.find_by_key('greeter').value = None
@@ -215,6 +223,34 @@ class ProfileMenu(AbstractSubMenu[ProfileConfiguration]):
 
 		return None
 
+	def _select_plasma_x11(self, preset: bool | None) -> bool:
+		header = 'Include plasma-x11-session package?\n'
+		header += 'Ususally useful for older hardware, alongside Wayland.\n'
+
+		group = MenuItemGroup.yes_no()
+		if preset is not None:
+			group.focus_item = MenuItem.yes() if preset else MenuItem.no()
+			group.default_item = MenuItem.yes() if preset else MenuItem.no()
+		else:
+			group.focus_item = MenuItem.no()
+			group.default_item = MenuItem.no()
+
+		result = SelectMenu[bool](
+			group,
+			header=header,
+			allow_skip=True,
+			columns=2,
+			orientation=Orientation.HORIZONTAL,
+			alignment=Alignment.CENTER,
+			frame=FrameProperties.min('x11 packages'),
+		).run()
+
+		if result.type_ == ResultType.Skip:
+			return preset if preset is not None else False
+		elif result.type_ == ResultType.Selection:
+			return result.item() == MenuItem.yes()
+
+		return False
 
 def select_greeter(
 	profile: Profile | None = None,
@@ -249,7 +285,6 @@ def select_greeter(
 				raise ValueError('Unhandled result type')
 
 	return None
-
 
 def select_profile(
 	current_profile: Profile | None = None,

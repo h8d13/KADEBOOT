@@ -226,6 +226,10 @@ class ProfileHandler:
 		if profile_config.greeter:
 			self.install_greeter(install_session, profile_config.greeter)
 
+		# Add plasma-x11-session package if selected
+		if profile_config.plasma_x11_session:
+			install_session.add_additional_packages(['plasma-x11-session'])
+
 	def _import_profile_from_url(self, url: str) -> None:
 		"""
 		Import default_profiles from a url path

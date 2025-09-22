@@ -19,10 +19,8 @@ from archinstall.lib.models.device import (
 )
 from archinstall.lib.models.users import User
 from archinstall.lib.output import debug, error, info
-# Package upgrade check removed
 from archinstall.lib.profile.profiles_handler import profile_handler
 from archinstall.tui import Tui
-
 
 def _check_for_saved_config() -> None:
 	"""Check for saved config and offer to resume"""
@@ -75,7 +73,6 @@ def _check_for_saved_config() -> None:
 
 			print('Saved configuration cleared - starting fresh')
 
-
 def ask_user_questions() -> None:
 	"""
 	First, we'll ask the user for a bunch of user input.
@@ -96,7 +93,6 @@ def ask_user_questions() -> None:
 			global_menu.set_enabled('parallel_downloads', False)
 
 		global_menu.run(additional_title=title_text)
-
 
 def perform_installation(mountpoint: Path) -> None:
 	"""
@@ -182,8 +178,8 @@ def perform_installation(mountpoint: Path) -> None:
 				installation.create_users(config.auth_config.users)
 				auth_handler.setup_auth(installation, config.auth_config, config.hostname)
 
-		mandatory_package = ['git']
-		installation.add_additional_packages(mandatory_package)
+		#mandatory_package = ['git']
+		#installation.add_additional_packages(mandatory_package)
 
 		if timezone := config.timezone:
 			installation.set_timezone(timezone)
@@ -236,7 +232,6 @@ def perform_installation(mountpoint: Path) -> None:
 					except Exception:
 						pass
 
-
 def guided() -> None:
 	if not arch_config_handler.args.silent:
 		ask_user_questions()
@@ -262,6 +257,5 @@ def guided() -> None:
 		fs_handler.perform_filesystem_operations()
 
 	perform_installation(arch_config_handler.args.mountpoint)
-
 
 guided()

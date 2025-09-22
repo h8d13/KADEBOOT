@@ -253,7 +253,8 @@ class Installer:
 
 		env_vars = {}
 
-		# NVIDIA-specific environment variables
+
+		### CHANGE ME NVIDIA-specific environment variables
 		if self._gfx_driver.is_nvidia():
 			debug(f'Adding NVIDIA environment variables for {self._gfx_driver.value}')
 
@@ -959,7 +960,6 @@ class Installer:
 				entry_conf = entries_dir / name
 				entry_conf.write_text(entry_template.format(kernel=kernel, variant=variant))
 
-
 	def _add_grub_bootloader(
 		self,
 		boot_partition: PartitionModification,
@@ -987,7 +987,8 @@ class Installer:
 		if self._gfx_driver:
 			debug(f'Graphics driver: {self._gfx_driver.value}, is_nvidia: {self._gfx_driver.is_nvidia()}')
 
-		# Add hardware-specific parameters to GRUB_CMDLINE_LINUX_DEFAULT
+		#### CHANGE ME Add hardware-specific parameters to GRUB_CMDLINE_LINUX_DEFAULT
+
 		if self._gfx_driver and self._gfx_driver.is_nvidia():
 			debug('Adding NVIDIA parameters to GRUB_CMDLINE_LINUX_DEFAULT')
 

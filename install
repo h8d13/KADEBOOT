@@ -31,8 +31,8 @@ else
     echo "Running from installed system"
     # If deps-only mode, exit after dependency check
     if [ "$DEPS_ONLY" = true ]; then
-    	chmod +x ./altodeps
-    	./altodeps
+    	chmod +x ./devs/altodeps
+    	./devs/altodeps
         echo "Dependency check complete. Exiting."
         exit 0
     fi

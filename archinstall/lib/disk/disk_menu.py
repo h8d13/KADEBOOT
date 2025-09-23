@@ -170,11 +170,6 @@ class DiskLayoutConfigurationMenu(AbstractSubMenu[DiskLayoutConfiguration]):
 
 		disk_layout_conf = item.get_value()
 
-		if disk_layout_conf.config_type == DiskLayoutType.Pre_mount:
-			msg = ('Configuration type: {}').format(disk_layout_conf.config_type.display_msg()) + '\n'
-			msg += ('Mountpoint') + ': ' + str(disk_layout_conf.mountpoint)
-			return msg
-
 		device_mods = [d for d in disk_layout_conf.device_modifications if d.partitions]
 
 		if device_mods:

@@ -23,7 +23,6 @@ DEFAULT_ITER_TIME = 10000
 class DiskLayoutType(Enum):
 	Default = 'default_layout'
 	Manual = 'manual_partitioning'
-	Pre_mount = 'pre_mounted_config'
 
 	def display_msg(self) -> str:
 		match self:
@@ -31,14 +30,11 @@ class DiskLayoutType(Enum):
 				return ('Use a best-effort default partition layout')
 			case DiskLayoutType.Manual:
 				return ('Manual Partitioning')
-			case DiskLayoutType.Pre_mount:
-				return ('Pre-mounted configuration')
 
 
 class _DiskLayoutConfigurationSerialization(TypedDict):
 	config_type: str
 	device_modifications: NotRequired[list[_DeviceModificationSerialization]]
-	mountpoint: NotRequired[str]
 	btrfs_options: NotRequired[_BtrfsOptionsSerialization]
 	disk_encryption: NotRequired[_DiskEncryptionSerialization]
 
@@ -50,29 +46,19 @@ class DiskLayoutConfiguration:
 	disk_encryption: DiskEncryption | None = None
 	btrfs_options: BtrfsOptions | None = None
 
-	# used for pre-mounted config
-	mountpoint: Path | None = None
-
 	def json(self) -> _DiskLayoutConfigurationSerialization:
-		if self.config_type == DiskLayoutType.Pre_mount:
-			return {
-				'config_type': self.config_type.value,
-				'mountpoint': str(self.mountpoint),
-			}
-		else:
-			config: _DiskLayoutConfigurationSerialization = {
-				'config_type': self.config_type.value,
-				'device_modifications': [mod.json() for mod in self.device_modifications],
-			}
+		config: _DiskLayoutConfigurationSerialization = {
+			'config_type': self.config_type.value,
+			'device_modifications': [mod.json() for mod in self.device_modifications],
+		}
 
+		if self.disk_encryption:
+			config['disk_encryption'] = self.disk_encryption.json()
 
-			if self.disk_encryption:
-				config['disk_encryption'] = self.disk_encryption.json()
+		if self.btrfs_options:
+			config['btrfs_options'] = self.btrfs_options.json()
 
-			if self.btrfs_options:
-				config['btrfs_options'] = self.btrfs_options.json()
-
-			return config
+		return config
 
 	@classmethod
 	def parse_arg(
@@ -92,19 +78,6 @@ class DiskLayoutConfiguration:
 			config_type=DiskLayoutType(config_type),
 			device_modifications=device_modifications,
 		)
-
-		if config_type == DiskLayoutType.Pre_mount.value:
-			if not (mountpoint := disk_config.get('mountpoint')):
-				raise ValueError('Must set a mountpoint when layout type is pre-mount')
-
-			path = Path(str(mountpoint))
-
-			mods = device_handler.detect_pre_mounted_mods(path)
-			device_modifications.extend(mods)
-
-			config.mountpoint = path
-
-			return config
 
 		for entry in disk_config.get('device_modifications', []):
 			device_path = Path(entry['device']) if entry.get('device', None) else None

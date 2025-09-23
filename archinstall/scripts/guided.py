@@ -123,15 +123,13 @@ def perform_installation(mountpoint: Path) -> None:
 		kernels=config.kernels,
 	) as installation:
 		# Mount all the drives to the desired mountpoint
-		if disk_config.config_type != DiskLayoutType.Pre_mount:
-			installation.mount_ordered_layout()
+		installation.mount_ordered_layout()
 
 		installation.sanity_check()
 
-		if disk_config.config_type != DiskLayoutType.Pre_mount:
-			if disk_config.disk_encryption and disk_config.disk_encryption.encryption_type != EncryptionType.NoEncryption:
-				# generate encryption key files for the mounted luks devices
-				installation.generate_key_files()
+		if disk_config.disk_encryption and disk_config.disk_encryption.encryption_type != EncryptionType.NoEncryption:
+			# generate encryption key files for the mounted luks devices
+			installation.generate_key_files()
 
 		if mirror_config := config.mirror_config:
 			installation.set_mirrors(mirror_config, on_target=False)

@@ -253,7 +253,6 @@ class Installer:
 
 		env_vars = {}
 
-
 		### CHANGE ME NVIDIA-specific environment variables
 		if self._gfx_driver.is_nvidia():
 			debug(f'Adding NVIDIA environment variables for {self._gfx_driver.value}')

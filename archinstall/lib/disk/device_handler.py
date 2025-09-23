@@ -495,31 +495,6 @@ class DeviceHandler:
 		except SysCallError as err:
 			raise DiskError(f'Could not mount {dev_path}: {command}\n{err.message}')
 
-	def detect_pre_mounted_mods(self, base_mountpoint: Path) -> list[DeviceModification]:
-		part_mods: dict[Path, list[PartitionModification]] = {}
-
-		for device in self.devices:
-			for part_info in device.partition_infos:
-				for mountpoint in part_info.mountpoints:
-					if is_subpath(mountpoint, base_mountpoint):
-						path = Path(part_info.disk.device.path)
-						part_mods.setdefault(path, [])
-						part_mod = PartitionModification.from_existing_partition(part_info)
-						if part_mod.mountpoint:
-							part_mod.mountpoint = mountpoint.root / mountpoint.relative_to(base_mountpoint)
-						else:
-							for subvol in part_mod.btrfs_subvols:
-								if sm := subvol.mountpoint:
-									subvol.mountpoint = sm.root / sm.relative_to(base_mountpoint)
-						part_mods[path].append(part_mod)
-						break
-
-		device_mods: list[DeviceModification] = []
-		for device_path, mods in part_mods.items():
-			device_mod = DeviceModification(self._devices[device_path], False, mods)
-			device_mods.append(device_mod)
-
-		return device_mods
 
 	def partprobe(self, path: Path | None = None) -> None:
 		if path is not None:

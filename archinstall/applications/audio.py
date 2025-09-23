@@ -8,14 +8,7 @@ from archinstall.lib.output import debug
 if TYPE_CHECKING:
 	from archinstall.lib.installer import Installer
 
-
 class AudioApp:
-	@property
-	def pulseaudio_packages(self) -> list[str]:
-		return [
-			'pulseaudio',
-		]
-
 	@property
 	def pipewire_packages(self) -> list[str]:
 		return [

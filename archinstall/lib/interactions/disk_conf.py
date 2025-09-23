@@ -28,7 +28,6 @@ from archinstall.tui.result import ResultType
 from archinstall.tui.types import Alignment, FrameProperties, Orientation, PreviewStyle
 
 from ..output import FormattedOutput
-from ..utils.util import prompt_dir
 
 
 def select_devices(preset: list[BDevice] | None = []) -> list[BDevice]:
@@ -117,12 +116,10 @@ def _manual_partitioning(
 def select_disk_config(preset: DiskLayoutConfiguration | None = None) -> DiskLayoutConfiguration | None:
 	default_layout = DiskLayoutType.Default.display_msg()
 	manual_mode = DiskLayoutType.Manual.display_msg()
-	pre_mount_mode = DiskLayoutType.Pre_mount.display_msg()
 
 	items = [
 		MenuItem(default_layout, value=default_layout),
 		MenuItem(manual_mode, value=manual_mode),
-		MenuItem(pre_mount_mode, value=pre_mount_mode),
 	]
 	group = MenuItemGroup(items, sort_items=False)
 
@@ -144,23 +141,6 @@ def select_disk_config(preset: DiskLayoutConfiguration | None = None) -> DiskLay
 			return None
 		case ResultType.Selection:
 			selection = result.get_value()
-
-			if selection == pre_mount_mode:
-				output = 'You will use whatever drive-setup is mounted at the specified directory\n'
-				output += "WARNING: Archinstall won't check the suitability of this setup\n"
-
-				path = prompt_dir(('Root mount directory'), output, allow_skip=True)
-
-				if path is None:
-					return None
-
-				mods = device_handler.detect_pre_mounted_mods(path)
-
-				return DiskLayoutConfiguration(
-					config_type=DiskLayoutType.Pre_mount,
-					device_modifications=mods,
-					mountpoint=path,
-				)
 
 			preset_devices = [mod.device for mod in preset.device_modifications] if preset else []
 			devices = select_devices(preset_devices)

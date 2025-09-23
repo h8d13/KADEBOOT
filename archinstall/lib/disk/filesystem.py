@@ -24,10 +24,6 @@ class FilesystemHandler:
 		self._disk_config = disk_config
 
 	def perform_filesystem_operations(self, show_countdown: bool = True) -> None:
-		if self._disk_config.config_type == DiskLayoutType.Pre_mount:
-			debug('Disk layout configuration is set to pre-mount, not performing any operations')
-			return
-
 		device_mods = [d for d in self._disk_config.device_modifications if d.partitions]
 
 		if not device_mods:

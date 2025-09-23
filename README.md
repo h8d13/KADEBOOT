@@ -57,14 +57,13 @@ After running the script it will restart one last time. **And you are done!**
 
 For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
+<img width="736" height="456" alt="image" src="https://github.com/user-attachments/assets/ae511cc6-ff58-4026-8689-f7e3ff662501" />
 
 ## KADEBOOT under the hood
 
 **Boot ISO** → Run KADEBOOT (Archinstall but modified for KDE) → **Reboot to hard disk** → (Clones for you) KAES-ARCH → Run post script (Many improvements to defaults) → (Clones for you) PACTOPAC →  **Reboot** → Use PACTOPAC settings page to quickly setup → **Normal usages** → Use PACTOPAC for ongoing management if needed (or use command line if familiar).
 
-> This set-up with a rolling release is ideal because we have single sources of truth for each critical aspect. Keep my work on the side and be able to brick an install if needed in 15 minutes. 
-
-We can also easily allow for self-upgrades by simply running `git pull` for example (especially for package manager or any added features). 
+> This set-up with a rolling release is ideal because we have single sources of truth for each critical aspect. Keep my work on the side and be able to brick an install if needed in 15 minutes. We can also easily allow for self-upgrades by simply running `git pull` in the right location.  
 
 ### Modifications
 

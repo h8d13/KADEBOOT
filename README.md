@@ -59,11 +59,6 @@ For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 
 <img width="736" height="456" alt="image" src="https://github.com/user-attachments/assets/ae511cc6-ff58-4026-8689-f7e3ff662501" />
 
-## KADEBOOT under the hood
-
-**Boot ISO** → Run KADEBOOT (Archinstall but modified for KDE) → **Reboot to hard disk** → (Clones for you) KAES-ARCH → Run post script (Many improvements to defaults) → (Clones for you) PACTOPAC →  **Reboot** → Use PACTOPAC settings page to quickly setup → **Normal usages** → Use PACTOPAC for ongoing management if needed (or use command line if familiar).
-
-> This set-up with a rolling release is ideal because we have single sources of truth for each critical aspect. Keep my work on the side and be able to brick an install if needed in 15 minutes. We can also easily allow for self-upgrades by simply running `git pull` in the right location.  
 
 ### Modifications
 
@@ -80,12 +75,19 @@ For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
 - Change certain OOO flow: 
     - mount > format filesystem > create new paritions (swap) > set mirrors and base settings > base install > audio > video > KDE plasma > bootloader 
     - /etc/environment variables > network manager > users > final tz, ntp, services, fstab
+- Removed pre-mounted options for true guided approach only
 
 - The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time and having hardware specific bootloader entries (and env vars) without having to think. These are widely *debated* and can result in performance enhancements/or correcting non-functional hardware.
 
 Here is the exact code block in question: [Here](https://github.com/h8d13/KADEBOOT/blob/master/archinstall/lib/installer.py#L963) This could be expanded upon to build hardware-aware and optimized presets considering hardware detection modules. 
 
 And the reference for why: [Wiki-KernelParameters](https://wiki.archlinux.org/title/Kernel_parameters) and [Wiki-Env](https://wiki.archlinux.org/title/Environment_variables)
+
+## KADEBOOT under the hood
+
+**Boot ISO** → Run KADEBOOT (Archinstall but modified for KDE) → **Reboot to hard disk** → (Clones for you) KAES-ARCH → Run post script (Many improvements to defaults) → (Clones for you) PACTOPAC →  **Reboot** → Use PACTOPAC settings page to quickly setup → **Normal usages** → Use PACTOPAC for ongoing management if needed (or use command line if familiar).
+
+> This set-up with a rolling release is ideal because we have single sources of truth for each critical aspect. Keep my work on the side and be able to brick an install if needed in 15 minutes. We can also easily allow for self-upgrades by simply running `git pull` in the right location.  
 
 --- 
 

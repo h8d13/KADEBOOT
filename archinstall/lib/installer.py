@@ -949,7 +949,7 @@ class Installer:
 		for key, value in env_vars.items():
 			# Check if the key already exists in the file
 			if f'{key}=' not in existing_content:
-				new_lines.append(f'{key}="{value}"')
+				new_lines.append(f'{key}={value}')
 
 		# Only append if we have new variables to add
 		if len(new_lines) > 3:  # More than just the comments

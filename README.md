@@ -3,8 +3,9 @@
 ----
 
 An unofficial **stripped-down version** of the official archinstall that **is only for KDE Plasma**.
+> Primary goal was to make it easier to test for devs, and also remove complexity from codebase so that I could expand on sections I wanted for my use cases or installs.
 
-This is a modified version (fork) of [archinstall](https://github.com/archlinux/archinstall), originally developed by the Arch Linux team.
+This is a modified version (fork) of [archinstall](https://github.com/archlinux/archinstall), originally developed by the Arch Linux team. Which has many more up-to-date features like UKI, systemd-boot, disk encryption, etc. 
 
 Perfect for users who know they want KDE and it's dependencies **(NetworkManager, Pipewire, and SDDM)**. 
 

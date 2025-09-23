@@ -115,7 +115,7 @@ def perform_installation(mountpoint: Path) -> None:
 	run_mkinitcpio = True
 	locale_config = config.locale_config
 	optional_repositories = config.mirror_config.optional_repositories if config.mirror_config else []
-	mountpoint = disk_config.mountpoint if disk_config.mountpoint else mountpoint
+	# mountpoint is already provided as a parameter, no need to get it from disk_config
 
 	with Installer(
 		mountpoint,

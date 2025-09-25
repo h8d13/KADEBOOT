@@ -2,6 +2,7 @@
 # ARCHINSTALL SYSTEM SUBDEPS SCRIPT
 PACKAGES=(
     # Required (core features)
+    "git"
     "arch-install-scripts"
     "grub"
     "mkinitcpio"
@@ -9,8 +10,8 @@ PACKAGES=(
     "dosfstools"
     # Optional (depending on options picked in archinstall)
     "btrfs-progs"
-    "cryptsetup"
-    "libfido2"
+    #"cryptsetup"
+    #"libfido2"
     # Core (sanity check)
     "coreutils"
     "e2fsprogs"

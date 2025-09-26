@@ -7,7 +7,7 @@ An unofficial **stripped-down version** of the official archinstall that **is on
 
 This is a modified version (fork) of [archinstall](https://github.com/archlinux/archinstall), originally developed by the Arch Linux team. Which has many more up-to-date features like UKI, systemd-boot, disk encryption, etc. 
 
-Perfect for users who know they want KDE and it's dependencies **(NetworkManager, Pipewire, and SDDM)**. 
+This version is for users who know they want KDE and it's dependencies **(NetworkManager, Pipewire, and SDDM)**. 
 
 ## Installation
 
@@ -78,7 +78,9 @@ For more info see main repo: [KAES-ARCH](https://github.com/h8d13/KAES-ARCH)
     - /etc/environment variables > network manager > users > final tz, ntp, services, fstab
 - Removed pre-mounted options for true guided approach only
 
-- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time and having hardware specific bootloader entries (and env vars) without having to think. These are widely *debated* and can result in performance enhancements/or correcting non-functional hardware.
+- The idea was to create a declerative flow that can be easy to reproduce/modify but also to benchmark from scratch each time and having hardware specific bootloader entries (and env vars) without having to think.
+
+- These are widely *debated/changing*and can result in performance enhancements/or correcting non-functional hardware.
 
 Here is the exact code block in question: [Here](https://github.com/h8d13/KADEBOOT/blob/master/archinstall/lib/installer.py#L963) This could be expanded upon to build hardware-aware and optimized presets considering hardware detection modules. 
 

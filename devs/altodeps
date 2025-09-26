@@ -60,4 +60,4 @@ for module_pkg in "${PYTHON_MODULES[@]}"; do
     fi
 done
 
-[ ${#MISSING[@]} -gt 0 ] && echo -e "\nInstall missing: sudo pacman -S ${MISSING[*]}"
+[ ${#MISSING[@]} -gt 0 ] && echo -e "\nInstall missing:\n sudo pacman -S ${MISSING[*]}"

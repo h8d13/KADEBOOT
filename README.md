@@ -98,6 +98,12 @@ And the reference for why: [Wiki-KernelParameters](https://wiki.archlinux.org/ti
 
 ## DEVS
 
+### GRUB2 Utility scripts 
+
+For further configuration: 
+
+[SYMAN](https://github.com/h8d13/SYMAN-GRUB2)
+
 ### (ARCH) Linux to Linux install (without ISO/USB)
 
 ``` ./install -d ``` This checks all system sub deps in case not running from ISO.

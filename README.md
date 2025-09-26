@@ -92,7 +92,9 @@ And the reference for why: [Wiki-KernelParameters](https://wiki.archlinux.org/ti
 
 → **Reboot to hard disk** → (Clones for you) KAES-ARCH → Run post script (Many improvements to defaults)
 
-→ (Clones for you) PACTOPAC →  **Reboot** → Use PACTOPAC settings page to quickly setup → **Normal usages** → Use PACTOPAC for ongoing management if needed (or use command line if familiar).
+→ (Clones for you) PACTOPAC →  **Reboot** → Use PACTOPAC settings page to quickly setup 
+
+→ **Normal usages** → Use PACTOPAC for ongoing management if needed (or use command line if familiar).
 
 > This set-up with a rolling release is ideal because we have single sources of truth for each critical aspect. Keep my work on the side and be able to brick an install if needed in 15 minutes. We can also easily allow for self-upgrades by simply running `git pull` in the right location.  
 
